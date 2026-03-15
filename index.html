@@ -311,9 +311,14 @@ input,textarea{-webkit-user-select:auto;user-select:auto}
         <div class="set-hint">Кто ты, твой контекст — добавляется к каждому промпту.</div>
       </div>
       <div class="set-field">
+        <span class="set-lbl" style="color:var(--eve)">Вечерний промпт</span>
+        <textarea class="set-inp" id="sEve" rows="5"></textarea>
+        <div class="set-hint">Как Claude отвечает на вечерние записи и заметки. Роль добавляется поверх.</div>
+      </div>
+      <div class="set-field">
         <span class="set-lbl" style="color:var(--mor)">Утренний промпт</span>
         <textarea class="set-inp" id="sMor" rows="5"></textarea>
-        <div class="set-hint">Как Claude разгоняет утро. Заполни сам или вставь готовый.</div>
+        <div class="set-hint">Как Claude разгоняет утро на основе вчерашней вечерней записи.</div>
       </div>
       <div class="set-div"></div>
       <div class="set-field">
@@ -365,6 +370,7 @@ let appData={
   settings:{
     claudeKey:'',
     baseContext:'',
+    evePrompt:'',
     morPrompt:'',
     roles:JSON.parse(JSON.stringify(DEFAULT_ROLES)),
     activeRole:'kat'
@@ -704,7 +710,8 @@ async function askClaude(id,btn){
   btn.disabled=true;btn.innerHTML='<span class="spin"></span>';
   const role=getActiveRole();
   const ctx=appData.settings?.baseContext||'';
-  const sys=[ctx,role.prompt].filter(Boolean).join('\n\n');
+  const eve=appData.settings?.evePrompt||'';
+  const sys=[ctx,eve,role.prompt].filter(Boolean).join('\n\n');
   const userMsg=`${typeLabel(e.type)}, ${e.date}, настроение ${e.mood}/5:\n${e.text}`;
   try{
     const r=await callClaudeSystem(sys,userMsg,350);
@@ -749,6 +756,7 @@ function setActiveRole(id){
 function openSettings(){
   $('sKey').value=appData.settings?.claudeKey||'';
   $('sCtx').value=appData.settings?.baseContext||'';
+  $('sEve').value=appData.settings?.evePrompt||'';
   $('sMor').value=appData.settings?.morPrompt||'';
   renderRolesList();
   openSheet('shSettings');
@@ -766,6 +774,7 @@ function saveSettings(){
   if(!appData.settings)appData.settings={};
   appData.settings.claudeKey=$('sKey').value.trim();
   appData.settings.baseContext=$('sCtx').value.trim();
+  appData.settings.evePrompt=$('sEve').value.trim();
   appData.settings.morPrompt=$('sMor').value.trim();
   sync();closeSheet();toast('Настройки сохранены');
 }
