@@ -14,143 +14,113 @@
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 <style>
-/* ═══ RESET ═══ */
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;overflow:hidden}
-body{-webkit-font-smoothing:antialiased;-webkit-user-select:none;user-select:none}
+body{-webkit-font-smoothing:antialiased;-webkit-user-select:none;user-select:auto}
 input,textarea{-webkit-user-select:auto;user-select:auto}
 ::-webkit-scrollbar{display:none}
-
-/* ═══ SURF DESIGN TOKENS ═══ */
 :root{
-  --bg:#FAF9F5; --surf:#FFFFFF;
-  --t1:#1C1C1E; --t2:#8A8985; --t3:#C4C3BE;
-  --acc:#1A7AE6; --ok:#2EBD52; --del:#E8453A; --warn:#E89A0A;
-  --eve:#4A4078; --mor:#C07800;
-  --brd:rgba(40,35,20,.07); --brd2:rgba(40,35,20,.13);
-  --sh:0 1px 5px rgba(30,25,10,.05); --sh2:0 4px 16px rgba(30,25,10,.08);
-  --fn:'DM Sans',-apple-system,sans-serif; --fs:'Playfair Display',Georgia,serif;
-  --st:env(safe-area-inset-top,0px); --sb:env(safe-area-inset-bottom,0px);
+  --bg:#FAF9F5;--surf:#fff;--t1:#1C1C1E;--t2:#8A8985;--t3:#C4C3BE;
+  --acc:#1A7AE6;--ok:#2EBD52;--del:#E8453A;--warn:#E89A0A;
+  --eve:#4A4078;--mor:#C07800;
+  --brd:rgba(40,35,20,.07);--brd2:rgba(40,35,20,.13);
+  --sh:0 1px 5px rgba(30,25,10,.05);--sh2:0 4px 16px rgba(30,25,10,.08);
+  --fn:'DM Sans',-apple-system,sans-serif;--fs:'Playfair Display',Georgia,serif;
+  --st:env(safe-area-inset-top,0px);--sb:env(safe-area-inset-bottom,0px);
 }
 @media(prefers-color-scheme:dark){
-  :root{
-    --bg:#1A1A1D; --surf:#2C2C2E;
-    --t1:#F0EFEA; --t2:#9A9A9A; --t3:#5A5A5A;
-    --brd:rgba(255,255,255,.08); --brd2:rgba(255,255,255,.15);
-  }
+  :root{--bg:#1A1A1D;--surf:#2C2C2E;--t1:#F0EFEA;--t2:#9A9A9A;--t3:#5A5A5A;--brd:rgba(255,255,255,.08);--brd2:rgba(255,255,255,.15)}
 }
-
-/* ═══ APP SHELL ═══ */
-.app{
-  width:100%;max-width:480px;margin:0 auto;
-  height:100vh;height:100dvh;
-  display:flex;flex-direction:column;
-  background:var(--bg);position:relative;overflow:hidden;
-  padding-top:var(--st);
-  font-family:var(--fn);color:var(--t1);
-}
-
-/* ═══ SCREENS ═══ */
+.app{width:100%;max-width:480px;margin:0 auto;height:100vh;height:100dvh;display:flex;flex-direction:column;background:var(--bg);position:relative;overflow:hidden;padding-top:var(--st);font-family:var(--fn);color:var(--t1)}
 .screen{position:absolute;inset:0;display:flex;flex-direction:column;transition:opacity .25s,transform .3s cubic-bezier(.22,1,.36,1);padding-top:var(--st)}
 .screen.off{opacity:0;pointer-events:none;transform:translateY(14px)}
 
-/* ───── LOGIN ───── */
-.login-wrap{flex:1;display:flex;flex-direction:column;justify-content:center;padding:36px 28px}
+/* LOGIN */
+.login-wrap{flex:1;display:flex;flex-direction:column;padding:60px 28px 36px}
 .login-lbl{font-size:11px;font-weight:600;letter-spacing:.6px;text-transform:uppercase;color:var(--t3);margin-bottom:4px}
 .login-logo{font-family:var(--fs);font-size:38px;font-weight:500;color:var(--t1);letter-spacing:-.6px;line-height:1.05;margin-bottom:8px}
 .login-sub{font-size:14px;color:var(--t2);line-height:1.55;margin-bottom:32px}
-.form-lbl{display:block;font-size:11px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:var(--t3);margin-bottom:6px}
-.form-input{width:100%;border:1.5px solid var(--brd2);border-radius:8px;padding:13px 14px;font-family:var(--fn);font-size:16px;color:var(--t1);background:var(--surf);outline:none;transition:border-color .15s;margin-bottom:4px}
-.form-input:focus{border-color:var(--acc)}
-.form-hint{font-size:11px;color:var(--t3);line-height:1.4;margin-bottom:14px}
+.f-lbl{display:block;font-size:11px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:var(--t3);margin-bottom:6px}
+.f-inp{width:100%;border:1.5px solid var(--brd2);border-radius:8px;padding:13px 14px;font-family:var(--fn);font-size:16px;color:var(--t1);background:var(--surf);outline:none;transition:border-color .15s;margin-bottom:4px}
+.f-inp:focus{border-color:var(--acc)}
+.f-hint{font-size:11px;color:var(--t3);line-height:1.4;margin-bottom:14px}
 .login-btn{width:100%;padding:14px;border-radius:8px;border:none;background:var(--acc);color:#fff;font-family:var(--fn);font-size:16px;font-weight:500;cursor:pointer;transition:transform .2s cubic-bezier(.34,1.56,.64,1)}
 .login-btn:active{transform:scale(.96)}
 
-/* ───── HEADER ───── */
+/* HEADER */
 .hdr{padding:12px 20px 0;flex-shrink:0}
 .hdr-row{display:flex;align-items:flex-end;justify-content:space-between}
 .hdr-date{font-size:11px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:var(--t3);margin-bottom:1px}
 .hdr-logo{font-family:var(--fs);font-size:20px;font-weight:500;color:var(--t1);letter-spacing:-.4px}
-.hdr-right{display:flex;align-items:center;gap:8px;padding-bottom:2px}
-.mode-pill{display:flex;align-items:center;gap:4px;font-size:11px;font-weight:500;border-radius:100px;padding:4px 10px;cursor:default}
-.mode-dot{width:5px;height:5px;border-radius:50%}
-.streak{font-size:11px;font-weight:500;color:var(--warn);background:rgba(232,154,10,.08);border-radius:100px;padding:4px 10px;display:flex;align-items:center;gap:4px}
+.hdr-right{display:flex;align-items:center;gap:6px;padding-bottom:2px}
+.role-pill{display:flex;align-items:center;gap:5px;font-size:11px;font-weight:500;border-radius:100px;padding:5px 10px;cursor:pointer;transition:transform .15s cubic-bezier(.34,1.56,.64,1),opacity .15s;border:0.5px solid transparent}
+.role-pill:active{transform:scale(.9)}
+.role-pill-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.streak{font-size:11px;font-weight:500;color:var(--warn);background:rgba(232,154,10,.08);border-radius:100px;padding:5px 10px;display:flex;align-items:center;gap:4px}
 .streak-dot{width:5px;height:5px;border-radius:50%;background:var(--warn)}
 .icon-btn{width:32px;height:32px;border-radius:50%;border:none;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .15s}
 .icon-btn:active{background:var(--brd)}
 .icon-btn svg{width:17px;height:17px;stroke:var(--t2);stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round}
-
-/* ───── STATUS ───── */
 .status-row{display:flex;align-items:center;gap:5px;padding:4px 20px 0;font-size:11px;color:var(--t3)}
-.sdot{width:5px;height:5px;border-radius:50%;background:var(--t3)}
-.sdot.on{background:var(--ok)}
-.sdot.sy{background:var(--warn);animation:pulse .9s ease-in-out infinite}
+.sdot{width:5px;height:5px;border-radius:50%;background:var(--t3);transition:background .3s}
+.sdot.on{background:var(--ok)}.sdot.sy{background:var(--warn);animation:pulse .9s infinite}
 
-/* ───── MAIN ───── */
+/* MAIN */
 .main{flex:1;overflow-y:auto;overflow-x:hidden;padding:10px 16px 0;-webkit-overflow-scrolling:touch}
 
-/* ───── AI WEEK BLOCK ───── */
-.ai-week{background:var(--surf);border-radius:12px;border:0.5px solid rgba(26,122,230,.14);padding:13px 15px;margin-bottom:12px;cursor:pointer;transition:transform .2s cubic-bezier(.22,1,.36,1)}
+/* MORNING BLOCK */
+.morning-block{background:var(--surf);border-radius:12px;border:0.5px solid rgba(192,120,0,.18);padding:13px 15px;margin-bottom:10px}
+.morning-lbl{display:flex;align-items:center;gap:5px;font-size:10px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:var(--mor);margin-bottom:5px}
+.morning-text{font-family:var(--fs);font-style:italic;font-size:13px;color:var(--t1);line-height:1.5}
+.morning-sub{font-size:12px;color:var(--t3);font-style:italic}
+
+/* WEEK INSIGHT */
+.ai-week{background:var(--surf);border-radius:12px;border:0.5px solid rgba(26,122,230,.14);padding:13px 15px;margin-bottom:10px;cursor:pointer;transition:transform .2s cubic-bezier(.22,1,.36,1)}
 .ai-week:active{transform:scale(.985)}
 .ai-week-lbl{display:flex;align-items:center;gap:5px;font-size:10px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:var(--acc);margin-bottom:5px}
-.ai-week-dot{width:5px;height:5px;border-radius:50%;background:var(--acc);animation:pulse 1.4s ease-in-out infinite}
+.ai-wdot{width:5px;height:5px;border-radius:50%;background:var(--acc);animation:pulse 1.4s infinite}
 .ai-week-text{font-family:var(--fs);font-style:italic;font-size:13px;color:var(--t1);line-height:1.5}
 .ai-week-empty{font-size:12px;color:var(--t3);font-style:italic}
 
-/* ───── MORNING BLOCK ───── */
-.morning-block{background:var(--surf);border-radius:12px;border:0.5px solid rgba(192,120,0,.18);padding:13px 15px;margin-bottom:12px}
-.morning-lbl{display:flex;align-items:center;gap:5px;font-size:10px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:var(--mor);margin-bottom:5px}
-.morning-text{font-family:var(--fs);font-style:italic;font-size:13px;color:var(--t1);line-height:1.5}
-.morning-empty{font-size:12px;color:var(--t3);font-style:italic}
-
-/* ───── SECTION ───── */
+/* ENTRIES */
 .sec{font-size:11px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:var(--t3);margin-bottom:8px;margin-top:2px}
-
-/* ───── CARD STACK ───── */
-.stack{position:relative;height:205px;margin-bottom:8px}
-.ecard{
-  position:absolute;left:0;right:0;top:0;
-  background:var(--surf);border-radius:12px;
-  border:0.5px solid var(--brd2);box-shadow:var(--sh);
-  padding:13px 15px;cursor:pointer;will-change:transform;
-}
+.stack{position:relative;height:215px;margin-bottom:8px}
+.ecard{position:absolute;left:0;right:0;top:0;background:var(--surf);border-radius:12px;border:0.5px solid var(--brd2);box-shadow:var(--sh);padding:12px 14px;cursor:pointer;will-change:transform}
 .ecard.top{z-index:3}
 .ecard.mid{transform:translateY(5px) scale(.97);z-index:2;pointer-events:none}
 .ecard.bot{transform:translateY(10px) scale(.94);z-index:1;pointer-events:none}
-.ecard-day{font-size:10px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:var(--t3);margin-bottom:5px}
+.ecard-header{display:flex;align-items:center;gap:6px;margin-bottom:5px}
+.ecard-type{font-size:9px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;padding:2px 7px;border-radius:100px}
+.ecard-day{font-size:11px;color:var(--t3);font-weight:500}
 .ecard-mood-row{display:flex;align-items:center;gap:8px;margin-bottom:6px}
 .mood-bar{flex:1;height:3px;background:rgba(40,35,20,.06);border-radius:2px;overflow:hidden}
 @media(prefers-color-scheme:dark){.mood-bar{background:rgba(255,255,255,.08)}}
 .mood-fill{height:100%;border-radius:2px}
-.ecard-text{font-size:13px;color:var(--t2);line-height:1.45;margin-bottom:7px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.ai-preview{font-family:var(--fs);font-style:italic;font-size:12px;line-height:1.4;padding-left:8px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.ai-preview.has{color:var(--eve);border-left:2px solid rgba(74,64,120,.2)}
-.ai-preview.none{color:var(--t3)}
+.ecard-text{font-size:13px;color:var(--t2);line-height:1.45;margin-bottom:6px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.ai-preview{font-family:var(--fs);font-style:italic;font-size:12px;line-height:1.4;padding-left:8px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;border-left:2px solid}
+.ai-preview.none{color:var(--t3);border-left-color:var(--brd2);font-style:normal;font-family:var(--fn)}
 
 .swipe-hint{display:flex;align-items:center;justify-content:center;gap:6px;font-size:11px;color:var(--t3);margin-bottom:10px}
 
-/* ───── EMPTY STATE ───── */
+/* EMPTY */
 .empty{text-align:center;padding:40px 20px;color:var(--t3)}
-.empty-icon{width:32px;height:32px;border-radius:50%;background:var(--brd);margin:0 auto 12px;display:flex;align-items:center;justify-content:center}
-.empty-icon svg{width:15px;height:15px;stroke:var(--t3);stroke-width:2;fill:none;stroke-linecap:round}
-.empty-title{font-family:var(--fs);font-size:17px;color:var(--t2);font-weight:500;margin-bottom:4px}
-.empty-sub{font-size:13px;line-height:1.5}
+.empty-ico{width:32px;height:32px;border-radius:50%;background:var(--brd);margin:0 auto 12px;display:flex;align-items:center;justify-content:center}
+.empty-ico svg{width:15px;height:15px;stroke:var(--t3);stroke-width:2;fill:none;stroke-linecap:round}
+.empty-t{font-family:var(--fs);font-size:17px;color:var(--t2);font-weight:500;margin-bottom:4px}
+.empty-s{font-size:13px;line-height:1.5}
 
-/* ───── BOTTOM BAR ───── */
-.bbar{
-  padding:8px 20px;padding-bottom:calc(10px + var(--sb));
-  background:rgba(250,249,245,.96);border-top:0.5px solid var(--brd);
-  display:flex;align-items:center;justify-content:space-between;flex-shrink:0;
-}
+/* BOTTOM BAR */
+.bbar{padding:8px 20px;padding-bottom:calc(10px + var(--sb));background:rgba(250,249,245,.96);border-top:0.5px solid var(--brd);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
 @media(prefers-color-scheme:dark){.bbar{background:rgba(26,26,29,.96)}}
 .bbar-stats{display:flex;gap:16px}
 .sn{font-family:var(--fs);font-size:18px;font-weight:500;color:var(--t1);line-height:1}
 .sl{font-size:10px;font-weight:600;letter-spacing:.4px;text-transform:uppercase;color:var(--t3);margin-top:2px}
+.bbar-btns{display:flex;gap:8px}
 .fab{width:44px;height:44px;border-radius:50%;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform .2s cubic-bezier(.34,1.56,.64,1)}
 .fab:active{transform:scale(.88)}
-.fab svg{width:18px;height:18px;stroke-width:2.5;stroke-linecap:round}
+.fab svg{stroke-width:2.5;stroke-linecap:round;fill:none}
 
-/* ───── OVERLAY + SHEET ───── */
+/* OVERLAY + SHEETS */
 .overlay{position:fixed;inset:0;background:rgba(20,18,10,.22);z-index:200;opacity:0;pointer-events:none;transition:opacity .25s;backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px)}
 .overlay.on{opacity:1;pointer-events:all}
 .sheet{position:fixed;bottom:0;left:50%;transform:translateX(-50%) translateY(102%);width:100%;max-width:480px;z-index:210;background:var(--surf);border-radius:16px 16px 0 0;transition:transform .35s cubic-bezier(.22,1,.36,1);padding-bottom:var(--sb);max-height:92vh;overflow-y:auto}
@@ -160,54 +130,70 @@ input,textarea{-webkit-user-select:auto;user-select:auto}
 .sh-body{padding:16px 20px 28px}
 .sh-title{font-family:var(--fs);font-size:18px;font-weight:500;color:var(--t1);margin-bottom:3px;letter-spacing:-.2px;line-height:1.3}
 .sh-sub{font-size:13px;color:var(--t2);margin-bottom:14px}
-
-/* ───── ENTRY DETAIL ───── */
-.sh-section{background:var(--bg);border-radius:10px;padding:12px 14px;margin-bottom:10px;border:0.5px solid var(--brd2)}
+.sh-sec{background:var(--bg);border-radius:10px;padding:12px 14px;margin-bottom:10px;border:0.5px solid var(--brd2)}
 .sh-slbl{font-size:10px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:var(--t3);margin-bottom:5px}
 .sh-stext{font-size:13px;color:var(--t1);line-height:1.55}
 .ai-answer{font-family:var(--fs);font-style:italic;font-size:14px;color:var(--t1);line-height:1.65}
-.ai-ans-lbl{display:flex;align-items:center;gap:6px;margin-bottom:7px}
-.role-pill{font-size:10px;font-weight:600;letter-spacing:.4px;text-transform:uppercase;color:var(--eve);background:rgba(74,64,120,.08);border-radius:100px;padding:2px 8px}
+.ai-ans-hdr{display:flex;align-items:center;gap:6px;margin-bottom:7px}
+.role-tag{font-size:10px;font-weight:600;letter-spacing:.4px;text-transform:uppercase;border-radius:100px;padding:2px 8px}
 .thinking{display:flex;gap:4px;align-items:center;padding:3px 0}
-.td{width:6px;height:6px;border-radius:50%;background:var(--eve)}
+.td{width:6px;height:6px;border-radius:50%}
 .td:nth-child(1){animation:dotpulse 1.2s .0s infinite}
 .td:nth-child(2){animation:dotpulse 1.2s .2s infinite}
 .td:nth-child(3){animation:dotpulse 1.2s .4s infinite}
 
-/* ───── ADD ENTRY SHEET ───── */
+/* ADD ENTRY */
+.type-row{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:14px}
+.type-btn{padding:10px 6px;border-radius:8px;border:1.5px solid var(--brd2);background:transparent;font-family:var(--fn);font-size:12px;font-weight:500;color:var(--t2);cursor:pointer;transition:all .15s;text-align:center}
+.type-btn.sel{color:#fff}
 .mood-pick{display:flex;justify-content:space-between;margin-bottom:14px}
 .mood-opt{width:43px;height:43px;border-radius:50%;border:1.5px solid var(--brd2);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:20px;transition:transform .2s cubic-bezier(.34,1.56,.64,1),border-color .15s}
 .mood-opt.sel{border-color:var(--acc);box-shadow:0 0 0 3px rgba(26,122,230,.1)}
 .mood-opt:active{transform:scale(.88)}
-.add-textarea{width:100%;border:1.5px solid var(--brd2);border-radius:8px;padding:11px 13px;font-family:var(--fn);font-size:15px;color:var(--t1);resize:none;background:var(--bg);outline:none;line-height:1.55;transition:border-color .15s}
-.add-textarea:focus{border-color:var(--acc)}
+.add-ta{width:100%;border:1.5px solid var(--brd2);border-radius:8px;padding:11px 13px;font-family:var(--fn);font-size:15px;color:var(--t1);resize:none;background:var(--bg);outline:none;line-height:1.55;transition:border-color .15s}
+.add-ta:focus{border-color:var(--acc)}
 
-/* ───── SETTINGS ───── */
+/* SETTINGS */
 .set-field{margin-bottom:14px}
 .set-lbl{display:block;font-size:11px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:var(--t3);margin-bottom:6px}
-.set-input{width:100%;border:1.5px solid var(--brd2);border-radius:8px;padding:10px 12px;font-family:var(--fn);font-size:13px;color:var(--t1);background:var(--bg);outline:none;transition:border-color .15s;resize:none;line-height:1.6}
-.set-input:focus{border-color:var(--acc)}
+.set-inp{width:100%;border:1.5px solid var(--brd2);border-radius:8px;padding:10px 12px;font-family:var(--fn);font-size:13px;color:var(--t1);background:var(--bg);outline:none;transition:border-color .15s;resize:none;line-height:1.6}
+.set-inp:focus{border-color:var(--acc)}
 .set-hint{font-size:11px;color:var(--t3);margin-top:4px;line-height:1.4}
-.set-divider{height:0.5px;background:var(--brd);margin:6px 0 14px}
+.set-div{height:0.5px;background:var(--brd);margin:6px 0 14px}
 
-/* ───── BUTTONS ───── */
+/* ROLES IN SETTINGS */
+.roles-list{display:flex;flex-direction:column;gap:8px;margin-bottom:10px}
+.role-item{background:var(--bg);border-radius:10px;border:0.5px solid var(--brd2);padding:11px 13px;display:flex;align-items:center;gap:10px;cursor:pointer;transition:transform .15s}
+.role-item:active{transform:scale(.98)}
+.role-item-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.role-item-name{font-size:13px;font-weight:500;color:var(--t1);flex:1}
+.role-item-edit{font-size:11px;color:var(--acc);font-weight:500}
+.add-role-btn{width:100%;padding:10px;border-radius:8px;border:1.5px dashed var(--brd2);background:transparent;font-family:var(--fn);font-size:13px;color:var(--t2);cursor:pointer;text-align:center;transition:border-color .15s}
+.add-role-btn:active{border-color:var(--acc)}
+
+/* ROLE PICKER */
+.role-picker-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
+.rp-card{border-radius:10px;border:0.5px solid var(--brd2);padding:12px;background:var(--bg);cursor:pointer;transition:transform .15s}
+.rp-card:active{transform:scale(.96)}
+.rp-card.active{border-width:1.5px}
+.rp-dot{width:8px;height:8px;border-radius:50%;margin-bottom:8px}
+.rp-name{font-size:13px;font-weight:500;color:var(--t1);margin-bottom:3px}
+.rp-style{font-size:11px;color:var(--t2);line-height:1.4}
+
+/* BUTTONS */
 .sh-btns{display:flex;gap:8px;margin-top:12px}
-.btn-g{flex:1;padding:10px;border-radius:8px;border:1.5px solid var(--brd2);background:transparent;font-family:var(--fn);font-size:14px;color:var(--t2);cursor:pointer;transition:transform .2s cubic-bezier(.22,1,.36,1)}
+.btn-g{flex:1;padding:10px;border-radius:8px;border:1.5px solid var(--brd2);background:transparent;font-family:var(--fn);font-size:14px;color:var(--t2);cursor:pointer;transition:transform .15s}
 .btn-g:active{transform:scale(.96)}
 .btn-p{flex:2;padding:10px;border-radius:8px;border:none;background:var(--acc);font-family:var(--fn);font-size:14px;color:#fff;font-weight:500;cursor:pointer;transition:transform .2s cubic-bezier(.34,1.56,.64,1)}
 .btn-p:active{transform:scale(.96)}
 .btn-p:disabled{opacity:.6;pointer-events:none}
-.btn-eve{background:var(--eve)!important}
 .btn-del{background:transparent!important;color:var(--del)!important;border-color:rgba(232,69,58,.2)!important;flex:1!important}
 
-/* ───── TOAST ───── */
-.toast{position:fixed;bottom:calc(76px + var(--sb));left:50%;transform:translateX(-50%) translateY(12px);background:var(--t1);color:var(--bg);font-size:13px;font-weight:500;padding:10px 20px;border-radius:100px;white-space:nowrap;z-index:500;opacity:0;transition:opacity .2s,transform .2s cubic-bezier(.22,1,.36,1);pointer-events:none;box-shadow:0 6px 18px rgba(30,25,10,.14)}
+/* TOAST */
+.toast{position:fixed;bottom:calc(74px + var(--sb));left:50%;transform:translateX(-50%) translateY(12px);background:var(--t1);color:var(--bg);font-size:13px;font-weight:500;padding:10px 20px;border-radius:100px;z-index:500;opacity:0;transition:opacity .2s,transform .2s cubic-bezier(.22,1,.36,1);pointer-events:none;box-shadow:0 6px 18px rgba(30,25,10,.14);white-space:nowrap}
 .toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+.spin{width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .8s linear infinite;flex-shrink:0;display:inline-block}
 
-/* ───── SPIN ───── */
-.spin{width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .8s linear infinite;flex-shrink:0}
-
-/* ───── KEYFRAMES ───── */
 @keyframes spin{to{transform:rotate(360deg)}}
 @keyframes pulse{0%,100%{opacity:.4}50%{opacity:1}}
 @keyframes dotpulse{0%,80%,100%{opacity:.2}40%{opacity:1}}
@@ -216,27 +202,25 @@ input,textarea{-webkit-user-select:auto;user-select:auto}
 </style>
 </head>
 <body>
-<div class="app" id="app">
-
+<div class="app">
   <div class="toast" id="toast"></div>
   <div class="overlay" id="ov" onclick="closeSheet()"></div>
 
-  <!-- ═══ LOGIN ═══ -->
+  <!-- LOGIN -->
   <div class="screen" id="sLogin">
     <div class="login-wrap">
       <div class="login-lbl">дневник</div>
       <div class="login-logo">Рефлексия<br>дня</div>
-      <div class="login-sub">Вечером — пространство чтобы принять день.<br>Утром — импульс чтобы его начать.</div>
-      <span class="form-lbl">Твоё имя</span>
-      <input class="form-input" id="inName" type="text" placeholder="Твоё имя" autocomplete="name" maxlength="32">
-      <div class="form-hint">Одинаковое на всех устройствах — иначе разные данные.</div>
+      <div class="login-sub">Утром — импульс на день.<br>Вечером — пространство принять его.</div>
+      <span class="f-lbl">Уникальный логин</span>
+      <input class="f-inp" id="inName" type="text" placeholder="придумай уникальный логин" autocomplete="off" maxlength="32">
+      <div class="f-hint">Твой ID в системе. Регистр важен: «Pu» и «pu» — разные данные. Одинаковый на всех устройствах.</div>
       <button class="login-btn" onclick="doLogin()">Войти →</button>
     </div>
   </div>
 
-  <!-- ═══ MAIN ═══ -->
+  <!-- MAIN -->
   <div class="screen off" id="sMain">
-
     <div class="hdr">
       <div class="hdr-row">
         <div>
@@ -244,47 +228,43 @@ input,textarea{-webkit-user-select:auto;user-select:auto}
           <div class="hdr-logo">Рефлексия</div>
         </div>
         <div class="hdr-right">
-          <div class="mode-pill" id="modePill"></div>
-          <div class="streak" id="streakEl" style="display:none">
-            <div class="streak-dot"></div>
-            <span id="streakN">0</span>
-          </div>
-          <button class="icon-btn" onclick="openSettings()" aria-label="Настройки">
+          <div class="role-pill" id="rolePill" onclick="openRolePicker()"></div>
+          <div class="streak" id="streakEl" style="display:none"><div class="streak-dot"></div><span id="streakN">0д</span></div>
+          <button class="icon-btn" onclick="openSettings()">
             <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
           </button>
         </div>
       </div>
-      <div class="status-row">
-        <div class="sdot" id="sdot"></div>
-        <span id="stxt" style="font-size:11px">—</span>
-      </div>
+      <div class="status-row"><div class="sdot" id="sdot"></div><span id="stxt" style="font-size:11px">—</span></div>
     </div>
-
     <div class="main" id="mainContent"></div>
-
     <div class="bbar">
       <div class="bbar-stats">
         <div><div class="sn" id="statTotal">0</div><div class="sl">записей</div></div>
         <div><div class="sn" id="statStreak">0</div><div class="sl">серия</div></div>
       </div>
-      <button class="fab" id="fabBtn" onclick="openAdd()" style="background:var(--acc);box-shadow:0 3px 12px rgba(26,122,230,.28)">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#fff"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-      </button>
+      <div class="bbar-btns">
+        <button class="fab" id="fabMain" onclick="openAdd()" style="background:var(--acc);box-shadow:0 3px 12px rgba(26,122,230,.25)">
+          <svg width="18" height="18" viewBox="0 0 24 24" stroke="#fff"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </button>
+      </div>
     </div>
   </div>
 
-  <!-- ═══ SHEET: entry detail ═══ -->
-  <div class="sheet" id="shEntry">
-    <div class="sh-bar"></div>
-    <div class="sh-body" id="shEntryBody"></div>
-  </div>
+  <!-- SHEET: entry detail -->
+  <div class="sheet" id="shEntry"><div class="sh-bar"></div><div class="sh-body" id="shEntryBody"></div></div>
 
-  <!-- ═══ SHEET: add entry ═══ -->
+  <!-- SHEET: add entry -->
   <div class="sheet" id="shAdd">
     <div class="sh-bar"></div>
     <div class="sh-body">
-      <div class="sh-title" id="addTitle">Как сегодня?</div>
-      <div class="sh-sub">Несколько слов или абзац — как пойдёт</div>
+      <div class="sh-title">Новая запись</div>
+      <div class="sh-sub">Выбери тип и напиши что хочешь</div>
+      <div class="type-row">
+        <div class="type-btn sel" id="tb-morning" onclick="selType('morning',this)" style="background:var(--mor);border-color:var(--mor)">Утренняя</div>
+        <div class="type-btn" id="tb-evening" onclick="selType('evening',this)">Вечерняя</div>
+        <div class="type-btn" id="tb-note" onclick="selType('note',this)">Заметка</div>
+      </div>
       <div class="mood-pick" id="moodPick">
         <div class="mood-opt" onclick="selMood(this,1)">😩</div>
         <div class="mood-opt" onclick="selMood(this,2)">😕</div>
@@ -292,346 +272,282 @@ input,textarea{-webkit-user-select:auto;user-select:auto}
         <div class="mood-opt sel" onclick="selMood(this,4)">🙂</div>
         <div class="mood-opt" onclick="selMood(this,5)">😌</div>
       </div>
-      <textarea class="add-textarea" id="addText" rows="5" placeholder="Что было важным сегодня?"></textarea>
+      <textarea class="add-ta" id="addText" rows="5" placeholder="Что сейчас?"></textarea>
       <div class="sh-btns">
         <button class="btn-g" onclick="closeSheet()">Отмена</button>
-        <button class="btn-p" onclick="saveEntry()">Сохранить</button>
+        <button class="btn-p" id="saveBtn" onclick="saveEntry()">Сохранить</button>
       </div>
     </div>
   </div>
 
-  <!-- ═══ SHEET: week insight ═══ -->
-  <div class="sheet" id="shWeek">
+  <!-- SHEET: week insight -->
+  <div class="sheet" id="shWeek"><div class="sh-bar"></div><div class="sh-body" id="shWeekBody"></div></div>
+
+  <!-- SHEET: role picker -->
+  <div class="sheet" id="shRole">
     <div class="sh-bar"></div>
-    <div class="sh-body" id="shWeekBody"></div>
+    <div class="sh-body">
+      <div class="sh-title">Роль Claude</div>
+      <div class="sh-sub">Как Claude отвечает на вечерние записи и заметки</div>
+      <div class="role-picker-grid" id="rolePickerGrid"></div>
+      <button class="btn-g" style="width:100%" onclick="closeSheet()">Закрыть</button>
+    </div>
   </div>
 
-  <!-- ═══ SHEET: settings ═══ -->
+  <!-- SHEET: settings -->
   <div class="sheet" id="shSettings">
     <div class="sh-bar"></div>
     <div class="sh-body">
       <div class="sh-title" style="margin-bottom:16px">Настройки</div>
-
       <div class="set-field">
         <span class="set-lbl">Anthropic API Key</span>
-        <input class="set-input" id="sKey" type="password" placeholder="sk-ant-api03-...">
-        <div class="set-hint">Хранится в localStorage. Получить: console.anthropic.com → API Keys.</div>
+        <input class="set-inp" id="sKey" type="password" placeholder="sk-ant-api03-...">
+        <div class="set-hint">Хранится в localStorage. console.anthropic.com → API Keys.</div>
       </div>
-
-      <div class="set-divider"></div>
-
+      <div class="set-div"></div>
       <div class="set-field">
-        <span class="set-lbl" style="color:var(--eve)">Вечерний промпт — поддержка</span>
-        <textarea class="set-input" id="sEve" rows="7" style="font-size:12px"></textarea>
-        <div class="set-hint">Claude читает вечернюю запись и отвечает в этой роли. 2–3 предложения.</div>
+        <span class="set-lbl" style="color:var(--t2)">Контекст обо мне</span>
+        <textarea class="set-inp" id="sCtx" rows="5"></textarea>
+        <div class="set-hint">Кто ты, твой контекст — добавляется к каждому промпту.</div>
       </div>
-
       <div class="set-field">
-        <span class="set-lbl" style="color:var(--mor)">Утренний промпт — разгон</span>
-        <textarea class="set-input" id="sMor" rows="7" style="font-size:12px"></textarea>
-        <div class="set-hint">Claude читает вчерашнюю вечернюю запись и даёт утренний импульс.</div>
+        <span class="set-lbl" style="color:var(--mor)">Утренний промпт</span>
+        <textarea class="set-inp" id="sMor" rows="5"></textarea>
+        <div class="set-hint">Как Claude разгоняет утро. Заполни сам или вставь готовый.</div>
       </div>
-
-      <div style="display:flex;gap:8px">
+      <div class="set-div"></div>
+      <div class="set-field">
+        <span class="set-lbl" style="color:var(--eve)">Роли</span>
+        <div class="set-hint" style="margin-bottom:10px">Добавляй, редактируй, удаляй роли. Активная роль — в шапке.</div>
+        <div class="roles-list" id="rolesListSettings"></div>
+        <button class="add-role-btn" onclick="openAddRole()">+ Добавить роль</button>
+      </div>
+      <div class="sh-btns" style="margin-top:4px">
         <button class="btn-g" onclick="closeSheet()">Отмена</button>
         <button class="btn-p" onclick="saveSettings()">Сохранить</button>
       </div>
     </div>
   </div>
 
+  <!-- SHEET: edit role -->
+  <div class="sheet" id="shRole2"><div class="sh-bar"></div><div class="sh-body" id="shRole2Body"></div></div>
+
 </div>
 
 <script>
-// ═══════════════════════════════════════════════════════════
-// TINYGESTURE 3.0.0 · Apache-2.0
-// ═══════════════════════════════════════════════════════════
-let passiveIfSupported=false;
-try{window.addEventListener('test',null,Object.defineProperty({},'passive',{get:function(){passiveIfSupported={passive:true};}}));}catch(e){}
-class TinyGesture{constructor(element,options){this.element=element;this.touch1=null;this.touch2=null;this.touchStartX=null;this.touchStartY=null;this.touchEndX=null;this.touchEndY=null;this.touchMove1=null;this.touchMove2=null;this.touchMoveX=null;this.touchMoveY=null;this.velocityX=null;this.velocityY=null;this.longPressTimer=null;this.doubleTapTimer=null;this.doubleTapWaiting=false;this.thresholdX=0;this.thresholdY=0;this.disregardVelocityThresholdX=0;this.disregardVelocityThresholdY=0;this.swipingHorizontal=false;this.swipingVertical=false;this.swipingDirection=null;this.swipedHorizontal=false;this.swipedVertical=false;this.originalDistance=null;this.newDistance=null;this.scale=null;this.originalAngle=null;this.newAngle=null;this.rotation=null;this.handlers={panstart:[],panmove:[],panend:[],swipeleft:[],swiperight:[],swipeup:[],swipedown:[],tap:[],doubletap:[],longpress:[],pinch:[],pinchend:[],rotate:[],rotateend:[]};this._onTouchStart=this.onTouchStart.bind(this);this._onTouchMove=this.onTouchMove.bind(this);this._onTouchEnd=this.onTouchEnd.bind(this);this.opts=Object.assign({},TinyGesture.defaults,options);this.element.addEventListener('touchstart',this._onTouchStart,passiveIfSupported);this.element.addEventListener('touchmove',this._onTouchMove,passiveIfSupported);this.element.addEventListener('touchend',this._onTouchEnd,passiveIfSupported);if(this.opts.mouseSupport&&!('ontouchstart'in window)){this.element.addEventListener('mousedown',this._onTouchStart,passiveIfSupported);document.addEventListener('mousemove',this._onTouchMove,passiveIfSupported);document.addEventListener('mouseup',this._onTouchEnd,passiveIfSupported);}}destroy(){var _a,_b;this.element.removeEventListener('touchstart',this._onTouchStart);this.element.removeEventListener('touchmove',this._onTouchMove);this.element.removeEventListener('touchend',this._onTouchEnd);this.element.removeEventListener('mousedown',this._onTouchStart);document.removeEventListener('mousemove',this._onTouchMove);document.removeEventListener('mouseup',this._onTouchEnd);clearTimeout((_a=this.longPressTimer)!==null&&_a!==void 0?_a:undefined);clearTimeout((_b=this.doubleTapTimer)!==null&&_b!==void 0?_b:undefined);}on(type,fn){if(this.handlers[type]){this.handlers[type].push(fn);return{type,fn,cancel:()=>this.off(type,fn)};}}off(type,fn){if(this.handlers[type]){const idx=this.handlers[type].indexOf(fn);if(idx!==-1){this.handlers[type].splice(idx,1);}}}fire(type,event){for(let i=0;i<this.handlers[type].length;i++){this.handlers[type][i](event);}}onTouchStart(event){var _a,_b,_c,_d,_e,_f,_g,_h,_j,_k,_l,_m,_o,_p,_q,_r,_s,_t,_u,_v,_w,_x,_y,_z,_0,_1;let didTouch1=false;let didTouch2=false;if(event.type!=='mousedown'){if(!this.touch1){this.touch1=event.changedTouches[0];didTouch1=true;}if(((didTouch1&&event.changedTouches.length>1)||!didTouch1)&&!this.touch2){this.touch2=[...event.changedTouches].find((touch)=>{var _a;return touch.identifier!==((_a=this.touch1)===null||_a===void 0?void 0:_a.identifier);})||null;this.originalDistance=Math.sqrt(Math.pow(((_b=(_a=this.touch2)===null||_a===void 0?void 0:_a.screenX)!==null&&_b!==void 0?_b:0)-((_f=(_d=(_c=this.touchMove1)===null||_c===void 0?void 0:_c.screenX)!==null&&_d!==void 0?_d:((_e=this.touch1)===null||_e===void 0?void 0:_e.screenX))!==null&&_f!==void 0?_f:0),2)+Math.pow(((_h=(_g=this.touch2)===null||_g===void 0?void 0:_g.screenY)!==null&&_h!==void 0?_h:0)-((_m=(_k=(_j=this.touchMove1)===null||_j===void 0?void 0:_j.screenY)!==null&&_k!==void 0?_k:((_l=this.touch1)===null||_l===void 0?void 0:_l.screenY))!==null&&_m!==void 0?_m:0),2));this.originalAngle=Math.atan2(((_p=(_o=this.touch2)===null||_o===void 0?void 0:_o.screenY)!==null&&_p!==void 0?_p:0)-((_t=(_r=(_q=this.touchMove1)===null||_q===void 0?void 0:_q.screenY)!==null&&_r!==void 0?_r:((_s=this.touch1)===null||_s===void 0?void 0:_s.screenY))!==null&&_t!==void 0?_t:0),((_v=(_u=this.touch2)===null||_u===void 0?void 0:_u.screenX)!==null&&_v!==void 0?_v:0)-((_z=(_x=(_w=this.touchMove1)===null||_w===void 0?void 0:_w.screenX)!==null&&_x!==void 0?_x:((_y=this.touch1)===null||_y===void 0?void 0:_y.screenX))!==null&&_z!==void 0?_z:0))/(Math.PI/180);return;}if(!didTouch1&&!didTouch2){return;}}if(didTouch1||event.type==='mousedown'){this.thresholdX=this.opts.threshold('x',this);this.thresholdY=this.opts.threshold('y',this);this.disregardVelocityThresholdX=this.opts.disregardVelocityThreshold('x',this);this.disregardVelocityThresholdY=this.opts.disregardVelocityThreshold('y',this);this.touchStartX=event.type==='mousedown'?event.screenX:((_0=this.touch1)===null||_0===void 0?void 0:_0.screenX)||0;this.touchStartY=event.type==='mousedown'?event.screenY:((_1=this.touch1)===null||_1===void 0?void 0:_1.screenY)||0;this.touchMoveX=null;this.touchMoveY=null;this.touchEndX=null;this.touchEndY=null;this.swipingDirection=null;this.longPressTimer=setTimeout(()=>this.fire('longpress',event),this.opts.longPressTime);this.scale=1;this.rotation=0;this.fire('panstart',event);}}onTouchMove(event){var _a,_b,_c,_d,_e,_f,_g,_h,_j,_k,_l,_m,_o;if(event.type==='mousemove'&&(!this.touchStartX||this.touchEndX!==null)){return;}let touch1=undefined;let touch2=undefined;if(event.type!=='mousemove'){touch1=[...event.changedTouches].find((touch)=>{var _a;return touch.identifier===((_a=this.touch1)===null||_a===void 0?void 0:_a.identifier);});this.touchMove1=touch1||this.touchMove1;touch2=[...event.changedTouches].find((touch)=>{var _a;return touch.identifier===((_a=this.touch2)===null||_a===void 0?void 0:_a.identifier);});this.touchMove2=touch2||this.touchMove2;}if(event.type==='mousemove'||touch1){const touchMoveX=(event.type==='mousemove'?event.screenX:(_a=touch1===null||touch1===void 0?void 0:touch1.screenX)!==null&&_a!==void 0?_a:0)-((_b=this.touchStartX)!==null&&_b!==void 0?_b:0);this.velocityX=touchMoveX-((_c=this.touchMoveX)!==null&&_c!==void 0?_c:0);this.touchMoveX=touchMoveX;const touchMoveY=(event.type==='mousemove'?event.screenY:(_d=touch1===null||touch1===void 0?void 0:touch1.screenY)!==null&&_d!==void 0?_d:0)-((_e=this.touchStartY)!==null&&_e!==void 0?_e:0);this.velocityY=touchMoveY-((_f=this.touchMoveY)!==null&&_f!==void 0?_f:0);this.touchMoveY=touchMoveY;const absTouchMoveX=Math.abs(this.touchMoveX);const absTouchMoveY=Math.abs(this.touchMoveY);this.swipingHorizontal=absTouchMoveX>this.thresholdX;this.swipingVertical=absTouchMoveY>this.thresholdY;this.swipingDirection=absTouchMoveX>absTouchMoveY?this.swipingHorizontal?'horizontal':'pre-horizontal':this.swipingVertical?'vertical':'pre-vertical';if(Math.max(absTouchMoveX,absTouchMoveY)>this.opts.pressThreshold){clearTimeout((_g=this.longPressTimer)!==null&&_g!==void 0?_g:undefined);}this.fire('panmove',event);}if(event.type!=='mousemove'&&this.touchMove1!=null&&this.touchMove2!=null){this.newDistance=Math.sqrt(Math.pow(this.touchMove2.screenX-this.touchMove1.screenX,2)+Math.pow(this.touchMove2.screenY-this.touchMove1.screenY,2));this.scale=this.newDistance/((_h=this.originalDistance)!==null&&_h!==void 0?_h:0);this.fire('pinch',event);this.newAngle=Math.atan2(((_j=this.touchMove2.screenY)!==null&&_j!==void 0?_j:0)-((_k=this.touchMove1.screenY)!==null&&_k!==void 0?_k:0),((_l=this.touchMove2.screenX)!==null&&_l!==void 0?_l:0)-((_m=this.touchMove1.screenX)!==null&&_m!==void 0?_m:0))/(Math.PI/180);this.rotation=this.newAngle-((_o=this.originalAngle)!==null&&_o!==void 0?_o:0);this.fire('rotate',event);}}onTouchEnd(event){var _a,_b,_c,_d,_e,_f,_g,_h,_j,_k;let touch1=undefined;if(event.type!=='mouseup'){touch1=[...event.changedTouches].find((touch)=>{var _a;return touch.identifier===((_a=this.touch1)===null||_a===void 0?void 0:_a.identifier);});if(![...event.touches].find((touch)=>{var _a;return touch.identifier===((_a=this.touch1)===null||_a===void 0?void 0:_a.identifier);})){this.touch1=null;this.touchMove1=null;}if(![...event.touches].find((touch)=>{var _a;return touch.identifier===((_a=this.touch2)===null||_a===void 0?void 0:_a.identifier);})){this.touch2=null;this.touchMove2=null;}}if(event.type==='mouseup'&&(!this.touchStartX||this.touchEndX!==null)){return;}if(event.type==='mouseup'||touch1){this.touchEndX=event.type==='mouseup'?event.screenX:(_a=touch1===null||touch1===void 0?void 0:touch1.screenX)!==null&&_a!==void 0?_a:0;this.touchEndY=event.type==='mouseup'?event.screenY:(_b=touch1===null||touch1===void 0?void 0:touch1.screenY)!==null&&_b!==void 0?_b:0;this.fire('panend',event);clearTimeout((_c=this.longPressTimer)!==null&&_c!==void 0?_c:undefined);const x=this.touchEndX-((_d=this.touchStartX)!==null&&_d!==void 0?_d:0);const absX=Math.abs(x);const y=this.touchEndY-((_e=this.touchStartY)!==null&&_e!==void 0?_e:0);const absY=Math.abs(y);const distance=Math.sqrt(Math.pow(x,2)+Math.pow(y,2));const absDistance=Math.abs(distance);const diagonal=absY/absX;if(absX>this.thresholdX||absY>this.thresholdY||(this.opts.diagonalSwipes&&(absDistance>this.thresholdX||absDistance>this.thresholdY))){this.swipedHorizontal=absX>this.thresholdX||(this.opts.diagonalSwipes&&absDistance>this.thresholdX);this.swipedVertical=absY>this.thresholdY||(this.opts.diagonalSwipes&&absDistance>this.thresholdY);if(!this.opts.diagonalSwipes||diagonal<Math.tan(((45-this.opts.diagonalLimit)*Math.PI)/180)||diagonal>Math.tan(((45+this.opts.diagonalLimit)*Math.PI)/180)){if(absX>=absY){this.swipedVertical=false;}if(absY>absX){this.swipedHorizontal=false;}}if(this.swipedHorizontal){if(x<0){if(((_f=this.velocityX)!==null&&_f!==void 0?_f:0)<-this.opts.velocityThreshold||distance<-this.disregardVelocityThresholdX){this.fire('swipeleft',event);}}else{if(((_g=this.velocityX)!==null&&_g!==void 0?_g:0)>this.opts.velocityThreshold||distance>this.disregardVelocityThresholdX){this.fire('swiperight',event);}}}if(this.swipedVertical){if(y<0){if(((_h=this.velocityY)!==null&&_h!==void 0?_h:0)<-this.opts.velocityThreshold||distance<-this.disregardVelocityThresholdY){this.fire('swipeup',event);}}else{if(((_j=this.velocityY)!==null&&_j!==void 0?_j:0)>this.opts.velocityThreshold||distance>this.disregardVelocityThresholdY){this.fire('swipedown',event);}}}}else if(absX<this.opts.pressThreshold&&absY<this.opts.pressThreshold){if(this.doubleTapWaiting){this.doubleTapWaiting=false;clearTimeout((_k=this.doubleTapTimer)!==null&&_k!==void 0?_k:undefined);this.fire('doubletap',event);}else{this.doubleTapWaiting=true;this.doubleTapTimer=setTimeout(()=>(this.doubleTapWaiting=false),this.opts.doubleTapTime);this.fire('tap',event);}}}if(!this.touch1&&!this.touch2){this.fire('pinchend',event);this.fire('rotateend',event);this.originalDistance=null;this.newDistance=null;this.scale=null;this.originalAngle=null;this.newAngle=null;this.rotation=null;}}}
+// ═══ TINYGESTURE 3.0 ═══
+let passiveIfSupported=false;try{window.addEventListener('test',null,Object.defineProperty({},'passive',{get:function(){passiveIfSupported={passive:true};}}));}catch(e){}
+class TinyGesture{constructor(element,options){this.element=element;this.touch1=null;this.touch2=null;this.touchStartX=null;this.touchStartY=null;this.touchEndX=null;this.touchEndY=null;this.touchMove1=null;this.touchMove2=null;this.touchMoveX=null;this.touchMoveY=null;this.velocityX=null;this.velocityY=null;this.longPressTimer=null;this.doubleTapTimer=null;this.doubleTapWaiting=false;this.thresholdX=0;this.thresholdY=0;this.disregardVelocityThresholdX=0;this.disregardVelocityThresholdY=0;this.swipingHorizontal=false;this.swipingVertical=false;this.swipingDirection=null;this.swipedHorizontal=false;this.swipedVertical=false;this.handlers={panstart:[],panmove:[],panend:[],swipeleft:[],swiperight:[],swipeup:[],swipedown:[],tap:[],doubletap:[],longpress:[],pinch:[],pinchend:[],rotate:[],rotateend:[]};this._onTouchStart=this.onTouchStart.bind(this);this._onTouchMove=this.onTouchMove.bind(this);this._onTouchEnd=this.onTouchEnd.bind(this);this.opts=Object.assign({},TinyGesture.defaults,options);this.element.addEventListener('touchstart',this._onTouchStart,passiveIfSupported);this.element.addEventListener('touchmove',this._onTouchMove,passiveIfSupported);this.element.addEventListener('touchend',this._onTouchEnd,passiveIfSupported);if(this.opts.mouseSupport&&!('ontouchstart'in window)){this.element.addEventListener('mousedown',this._onTouchStart,passiveIfSupported);document.addEventListener('mousemove',this._onTouchMove,passiveIfSupported);document.addEventListener('mouseup',this._onTouchEnd,passiveIfSupported);}}destroy(){var _a,_b;this.element.removeEventListener('touchstart',this._onTouchStart);this.element.removeEventListener('touchmove',this._onTouchMove);this.element.removeEventListener('touchend',this._onTouchEnd);this.element.removeEventListener('mousedown',this._onTouchStart);document.removeEventListener('mousemove',this._onTouchMove);document.removeEventListener('mouseup',this._onTouchEnd);clearTimeout((_a=this.longPressTimer)!==null&&_a!==void 0?_a:undefined);clearTimeout((_b=this.doubleTapTimer)!==null&&_b!==void 0?_b:undefined);}on(type,fn){if(this.handlers[type]){this.handlers[type].push(fn);return{type,fn,cancel:()=>this.off(type,fn)};}}off(type,fn){if(this.handlers[type]){const idx=this.handlers[type].indexOf(fn);if(idx!==-1)this.handlers[type].splice(idx,1);}}fire(type,event){for(let i=0;i<this.handlers[type].length;i++)this.handlers[type][i](event);}onTouchStart(event){var _a,_b,_c,_d,_e,_f,_g,_h,_j,_k,_l,_m,_o,_p,_q,_r,_s,_t,_u,_v,_w,_x,_y,_z,_0,_1;let didTouch1=false;if(event.type!=='mousedown'){if(!this.touch1){this.touch1=event.changedTouches[0];didTouch1=true;}if(!didTouch1||event.changedTouches.length>1)return;if(!didTouch1)return;}if(didTouch1||event.type==='mousedown'){this.thresholdX=this.opts.threshold('x',this);this.thresholdY=this.opts.threshold('y',this);this.disregardVelocityThresholdX=this.opts.disregardVelocityThreshold('x',this);this.disregardVelocityThresholdY=this.opts.disregardVelocityThreshold('y',this);this.touchStartX=event.type==='mousedown'?event.screenX:((_0=this.touch1)===null||_0===void 0?void 0:_0.screenX)||0;this.touchStartY=event.type==='mousedown'?event.screenY:((_1=this.touch1)===null||_1===void 0?void 0:_1.screenY)||0;this.touchMoveX=null;this.touchMoveY=null;this.touchEndX=null;this.touchEndY=null;this.swipingDirection=null;this.longPressTimer=setTimeout(()=>this.fire('longpress',event),this.opts.longPressTime);this.fire('panstart',event);}}onTouchMove(event){var _a,_b,_c,_d,_e,_f,_g;if(event.type==='mousemove'&&(!this.touchStartX||this.touchEndX!==null))return;let touch1=undefined;if(event.type!=='mousemove'){touch1=[...event.changedTouches].find((touch)=>{var _a;return touch.identifier===((_a=this.touch1)===null||_a===void 0?void 0:_a.identifier);});this.touchMove1=touch1||this.touchMove1;}if(event.type==='mousemove'||touch1){const touchMoveX=(event.type==='mousemove'?event.screenX:(_a=touch1===null||touch1===void 0?void 0:touch1.screenX)!==null&&_a!==void 0?_a:0)-((_b=this.touchStartX)!==null&&_b!==void 0?_b:0);this.velocityX=touchMoveX-((_c=this.touchMoveX)!==null&&_c!==void 0?_c:0);this.touchMoveX=touchMoveX;const touchMoveY=(event.type==='mousemove'?event.screenY:(_d=touch1===null||touch1===void 0?void 0:touch1.screenY)!==null&&_d!==void 0?_d:0)-((_e=this.touchStartY)!==null&&_e!==void 0?_e:0);this.velocityY=touchMoveY-((_f=this.touchMoveY)!==null&&_f!==void 0?_f:0);this.touchMoveY=touchMoveY;const ax=Math.abs(this.touchMoveX),ay=Math.abs(this.touchMoveY);this.swipingHorizontal=ax>this.thresholdX;this.swipingVertical=ay>this.thresholdY;this.swipingDirection=ax>ay?this.swipingHorizontal?'horizontal':'pre-horizontal':this.swipingVertical?'vertical':'pre-vertical';if(Math.max(ax,ay)>this.opts.pressThreshold)clearTimeout((_g=this.longPressTimer)!==null&&_g!==void 0?_g:undefined);this.fire('panmove',event);}}onTouchEnd(event){var _a,_b,_c,_d,_e,_f,_g,_h,_j,_k;let touch1=undefined;if(event.type!=='mouseup'){touch1=[...event.changedTouches].find((touch)=>{var _a;return touch.identifier===((_a=this.touch1)===null||_a===void 0?void 0:_a.identifier);});if(![...event.touches].find((touch)=>{var _a;return touch.identifier===((_a=this.touch1)===null||_a===void 0?void 0:_a.identifier);})){this.touch1=null;this.touchMove1=null;}}if(event.type==='mouseup'&&(!this.touchStartX||this.touchEndX!==null))return;if(event.type==='mouseup'||touch1){this.touchEndX=event.type==='mouseup'?event.screenX:(_a=touch1===null||touch1===void 0?void 0:touch1.screenX)!==null&&_a!==void 0?_a:0;this.touchEndY=event.type==='mouseup'?event.screenY:(_b=touch1===null||touch1===void 0?void 0:touch1.screenY)!==null&&_b!==void 0?_b:0;this.fire('panend',event);clearTimeout((_c=this.longPressTimer)!==null&&_c!==void 0?_c:undefined);const x=this.touchEndX-((_d=this.touchStartX)!==null&&_d!==void 0?_d:0);const absX=Math.abs(x);const y=this.touchEndY-((_e=this.touchStartY)!==null&&_e!==void 0?_e:0);const absY=Math.abs(y);if(absX>this.thresholdX||absY>this.thresholdY){this.swipedHorizontal=absX>this.thresholdX;this.swipedVertical=absY>this.thresholdY;if(absX>=absY)this.swipedVertical=false;if(absY>absX)this.swipedHorizontal=false;if(this.swipedHorizontal){if(x<0){if(((_f=this.velocityX)!==null&&_f!==void 0?_f:0)<-this.opts.velocityThreshold||x<-this.disregardVelocityThresholdX)this.fire('swipeleft',event);}else{if(((_g=this.velocityX)!==null&&_g!==void 0?_g:0)>this.opts.velocityThreshold||x>this.disregardVelocityThresholdX)this.fire('swiperight',event);}}if(this.swipedVertical){if(y<0){if(((_h=this.velocityY)!==null&&_h!==void 0?_h:0)<-this.opts.velocityThreshold||y<-this.disregardVelocityThresholdY)this.fire('swipeup',event);}else{if(((_j=this.velocityY)!==null&&_j!==void 0?_j:0)>this.opts.velocityThreshold||y>this.disregardVelocityThresholdY)this.fire('swipedown',event);}}}else if(absX<this.opts.pressThreshold&&absY<this.opts.pressThreshold){if(this.doubleTapWaiting){this.doubleTapWaiting=false;clearTimeout((_k=this.doubleTapTimer)!==null&&_k!==void 0?_k:undefined);this.fire('doubletap',event);}else{this.doubleTapWaiting=true;this.doubleTapTimer=setTimeout(()=>(this.doubleTapWaiting=false),this.opts.doubleTapTime);this.fire('tap',event);}}}}}
 TinyGesture.defaults={threshold:(type,_self)=>Math.max(25,Math.floor(0.15*(type==='x'?window.innerWidth||document.body.clientWidth:window.innerHeight||document.body.clientHeight))),velocityThreshold:10,disregardVelocityThreshold:(type,self)=>Math.floor(0.5*(type==='x'?self.element.clientWidth:self.element.clientHeight)),pressThreshold:8,diagonalSwipes:false,diagonalLimit:15,longPressTime:500,doubleTapTime:300,mouseSupport:true};
 
-// ═══════════════════════════════════════════════════════════
-// CONFIG
-// ═══════════════════════════════════════════════════════════
-const APP_NAME = 'reflexia-day';
+// ═══ CONFIG ═══
+const APP_NAME='reflexia-v3';
+const FB_CONFIG={apiKey:"AIzaSyAgIA0PLvUOJsRN8tHRzC03evTTkt3KHHc",authDomain:"skills-tracker-3f21b.firebaseapp.com",projectId:"skills-tracker-3f21b",storageBucket:"skills-tracker-3f21b.firebasestorage.app",messagingSenderId:"108202530564",appId:"1:108202530564:web:31ecf70071f49a89abe251"};
 
-const FB_CONFIG = {
-  apiKey:            "AIzaSyAgIA0PLvUOJsRN8tHRzC03evTTkt3KHHc",
-  authDomain:        "skills-tracker-3f21b.firebaseapp.com",
-  projectId:         "skills-tracker-3f21b",
-  storageBucket:     "skills-tracker-3f21b.firebasestorage.app",
-  messagingSenderId: "108202530564",
-  appId:             "1:108202530564:web:31ecf70071f49a89abe251"
-};
+// Дефолтные роли — промпты без личного контекста (контекст хранится отдельно в sCtx)
+const DEFAULT_ROLES=[
+  {id:'kat',name:'КАТ',color:'#4A4078',prompt:'Отвечай 2–3 предложениями. Замечай паттерны в тексте — не объясняй их, просто называй. Отражай эмоцию которую человек назвал вскользь. Тон тёплый, немного парадоксальный. Без советов. Без вопросов.'},
+  {id:'ling',name:'Лингвист',color:'#2EBD52',prompt:'Отвечай 1–2 предложениями. Смотри только на язык — выбор слов, метафоры, как человек называет вещи. Игнорируй смысл, работай с формой. Тон точный, нейтральный. Без советов. Без вопросов.'},
+  {id:'sys',name:'Системный',color:'#1A7AE6',prompt:'Отвечай 2 предложениями. Ищи повторяющиеся паттерны, циклы, связи между разными частями текста. Называй структуру, не детали. Тон спокойный, без оценок. Без советов. Без вопросов.'},
+  {id:'wit',name:'Свидетель',color:'#8A8985',prompt:'Отвечай одним предложением. Только переформулируй суть другими словами — точное зеркало. Никакой интерпретации, никаких советов, никаких вопросов. Просто отражение.'},
+];
 
-// Дефолтные промпты — живут здесь только до первого сохранения в настройках
-const DEFAULT_EVE_PROMPT = `Ты внимательный вечерний собеседник — не психолог, не коуч, просто человек который умеет слушать. Тебе пишет Константин в конце дня.
+// ═══ STATE ═══
+let fbDb=null,fbAuth=null,fbOk=false,fbBusy=false;
+let userName='',userId='',lsKey='';
+let deckIdx=0,cardGesture=null;
+let addType='morning',selMoodVal=4;
+let editingRoleId=null;
 
-Что ты знаешь о нём: у него есть партнёр Аня и сын Слава (10 класс). Он работает в мебельной компании Massivburg, ведёт проекты Горская и Колесниченко. По вечерам пишет код и делает ИИ-инструменты — это и хобби, и работа. Ведёт Telegram-канал Мебель+ИИ. Работает с психологом Амалией (EMDR).
-
-Твоя задача: прочитать запись и ответить 2–3 предложениями. Главное — не советовать и не анализировать в лоб. Замечай что-то живое в тексте: эмоцию которую он назвал вскользь, противоречие, деталь про Аню или Славу которую он упомянул как бы между делом. Иногда один тихий вопрос — не для разбора, а чтобы он сам дальше подумал. Тон: тёплый, без пафоса, без восклицательных знаков. Как будто сидите вдвоём и никуда не торопитесь.`;
-
-const DEFAULT_MOR_PROMPT = `Ты утренний собеседник Константина. Перед тобой его вчерашняя вечерняя запись.
-
-Что ты знаешь о нём: мебельщик и разработчик-энтузиаст. Работает в Massivburg — и это бывает тяжело, особенно утром: сначала трудно встать, потом трудно переключиться в рабочий режим. По вечерам пишет код с помощью ИИ, делает свои инструменты (Surf и другие). Сын Слава в 10 классе, партнёр Аня.
-
-Твоя задача — дать короткий утренний разгон, 2–3 предложения.
-
-Учитывай что утро даётся непросто: не гони, не бодри искусственно. Если во вчерашней записи было что-то про задачи, код, проекты или продуктивность — подхвати конкретно это: напомни, создай импульс именно отсюда. Если вчера было только про состояние — просто помоги мягко настроиться.
-
-Заканчивай одним конкретным вопросом про действие — не «как ты?», а «что первым?» или «с чего начнёшь?». Вопрос должен быть маленьким, не пугающим. Тон: спокойный и живой, как человек который знает что утро — это отдельная задача, и не торопит.`;
-
-// ═══════════════════════════════════════════════════════════
-// STATE
-// ═══════════════════════════════════════════════════════════
-let fbDb=null, fbAuth=null, fbOk=false, fbBusy=false;
-let userName='', userId='', lsKey='';
-let cardGesture=null, deckIdx=0;
-
-let appData = {
-  entries: [],
-  weekInsight: { text:'', weekHash:'', generatedAt:0 },
-  settings: {
-    claudeKey: '',
-    evePrompt: DEFAULT_EVE_PROMPT,
-    morPrompt: DEFAULT_MOR_PROMPT
+let appData={
+  entries:[],
+  weekInsight:{text:'',weekHash:'',generatedAt:0},
+  settings:{
+    claudeKey:'',
+    baseContext:'',
+    morPrompt:'',
+    roles:JSON.parse(JSON.stringify(DEFAULT_ROLES)),
+    activeRole:'kat'
   }
 };
 
-// ═══════════════════════════════════════════════════════════
-// UTILS
-// ═══════════════════════════════════════════════════════════
+// ═══ UTILS ═══
 const $=id=>document.getElementById(id);
 function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6)}
 function simpleHash(s){let h=0;for(let i=0;i<s.length;i++){const c=s.charCodeAt(i);h=((h<<5)-h)+c;h=h&h;}return Math.abs(h).toString(36);}
 function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
 function todayISO(){return new Date().toISOString().split('T')[0]}
 function getMode(){const h=new Date().getHours();return h>=5&&h<12?'morning':'evening'}
-function getWeekHash(){const d=new Date();const start=new Date(d.getFullYear(),0,1);const wk=Math.ceil(((d-start)/86400000+start.getDay()+1)/7);return`${d.getFullYear()}-W${String(wk).padStart(2,'0')}`;}
-
-const MONTHS=['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
-const DAYS=['воскресенье','понедельник','вторник','среда','четверг','пятница','суббота'];
-function formatDate(iso){
-  const d=new Date(iso+'T12:00:00');
-  const today=todayISO();
-  const yest=new Date(Date.now()-86400000).toISOString().split('T')[0];
-  if(iso===today)return'сегодня, '+d.getDate()+' '+MONTHS[d.getMonth()];
-  if(iso===yest)return'вчера, '+d.getDate()+' '+MONTHS[d.getMonth()];
-  return DAYS[d.getDay()]+', '+d.getDate()+' '+MONTHS[d.getMonth()];
-}
+function getWeekHash(){const d=new Date(),s=new Date(d.getFullYear(),0,1),w=Math.ceil(((d-s)/86400000+s.getDay()+1)/7);return`${d.getFullYear()}-W${String(w).padStart(2,'0')}`;}
+const MO=['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
+const WD=['воскресенье','понедельник','вторник','среда','четверг','пятница','суббота'];
+function fmtDate(iso){const d=new Date(iso+'T12:00:00'),t=todayISO(),y=new Date(Date.now()-86400000).toISOString().split('T')[0];if(iso===t)return'сегодня, '+d.getDate()+' '+MO[d.getMonth()];if(iso===y)return'вчера, '+d.getDate()+' '+MO[d.getMonth()];return WD[d.getDay()]+', '+d.getDate()+' '+MO[d.getMonth()];}
+function fmtTime(ts){const d=new Date(ts);return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');}
 function moodColor(m){return['','var(--del)','var(--warn)','var(--warn)','var(--ok)','var(--acc)'][m]||'var(--t3)'}
 function moodPct(m){return[0,18,38,60,76,94][m]||0}
+function typeLabel(t){return{morning:'утро',evening:'вечер',note:'заметка'}[t]||t}
+function typeColor(t){return{morning:'var(--mor)',evening:'var(--eve)',note:'var(--t2)'}[t]||'var(--t2)'}
+function typeBg(t){return{morning:'rgba(192,120,0,.08)',evening:'rgba(74,64,120,.08)',note:'rgba(40,35,20,.05)'}[t]||'rgba(40,35,20,.05)'}
+function getActiveRole(){const r=appData.settings?.roles||DEFAULT_ROLES;return r.find(x=>x.id===(appData.settings?.activeRole||'kat'))||r[0]||DEFAULT_ROLES[0];}
+function plural(n,a,b,c){const m=n%10,h=n%100;if(m===1&&h!==11)return a;if(m>=2&&m<=4&&(h<10||h>=20))return b;return c;}
 
-// ═══════════════════════════════════════════════════════════
-// TOAST
-// ═══════════════════════════════════════════════════════════
+// ═══ TOAST ═══
 let _tt=null;
-function toast(msg,dur=2600){
-  const el=$('toast');el.textContent=msg;el.classList.add('on');
-  clearTimeout(_tt);_tt=setTimeout(()=>el.classList.remove('on'),dur);
-}
+function toast(msg,dur=2600){const el=$('toast');el.textContent=msg;el.classList.add('on');clearTimeout(_tt);_tt=setTimeout(()=>el.classList.remove('on'),dur);}
 
-// ═══════════════════════════════════════════════════════════
-// STATUS
-// ═══════════════════════════════════════════════════════════
-function setStatus(cls,txt){
-  const d=$('sdot'),t=$('stxt');
-  if(d){d.className='sdot '+cls;}if(t)t.textContent=txt;
-}
+// ═══ STATUS ═══
+function setStatus(cls,txt){const d=$('sdot'),t=$('stxt');if(d){d.className='sdot '+cls;}if(t)t.textContent=txt;}
 
-// ═══════════════════════════════════════════════════════════
-// LOCAL STORAGE
-// ═══════════════════════════════════════════════════════════
+// ═══ STORAGE ═══
 function saveLs(){try{localStorage.setItem(lsKey,JSON.stringify(appData));}catch(e){}}
-function loadLs(){try{const r=localStorage.getItem(lsKey);if(r){appData={...appData,...JSON.parse(r)};}}catch(e){}}
-
-// ═══════════════════════════════════════════════════════════
-// FIREBASE
-// ═══════════════════════════════════════════════════════════
-function initFb(){
-  try{
-    firebase.initializeApp(FB_CONFIG);
-    fbDb=firebase.firestore();fbAuth=firebase.auth();
-    fbAuth.signInAnonymously()
-      .then(r=>{fbOk=true;setStatus('on','Онлайн');loadFb();})
-      .catch(()=>{fbOk=false;setStatus('','Офлайн');});
-  }catch(e){fbOk=false;setStatus('','Офлайн');}
-}
-function fbRef(){return fbDb.collection('apps').doc(APP_NAME).collection('users').doc(userId);}
-
-async function saveFb(){
-  if(!fbOk||fbBusy)return;
-  if(!appData.entries?.length&&!appData.settings?.claudeKey)return;
-  fbBusy=true;setStatus('sy','Сохранение...');
-  try{
-    await fbRef().set({data:JSON.stringify(appData),ts:firebase.firestore.FieldValue.serverTimestamp(),by:userName},{merge:true});
-    setStatus('on','Сохранено');
-  }catch(e){setStatus('','Ошибка');}
-  finally{fbBusy=false;}
-}
-
-async function loadFb(){
-  if(window._fbL||!fbOk)return;
-  window._fbL=true;fbBusy=true;setStatus('sy','Загрузка...');
-  try{
-    const doc=await fbRef().get();
-    if(doc.exists&&doc.data().data){
-      appData={...appData,...JSON.parse(doc.data().data)};
-      saveLs();render();setStatus('on','Загружено');
-    }else setStatus('on','Готово');
-    setTimeout(checkMorningAuto,800);
-  }catch(e){setStatus('','Офлайн');}
-  finally{fbBusy=false;window._fbL=false;}
-}
-
+function loadLs(){try{const r=localStorage.getItem(lsKey);if(r){const d=JSON.parse(r);appData={...appData,...d};if(!appData.settings.roles?.length)appData.settings.roles=JSON.parse(JSON.stringify(DEFAULT_ROLES));}}catch(e){}}
 let _syncT=null;
 function sync(){saveLs();clearTimeout(_syncT);_syncT=setTimeout(saveFb,1800);}
 
-// ═══════════════════════════════════════════════════════════
-// LOGIN
-// ═══════════════════════════════════════════════════════════
+// ═══ FIREBASE ═══
+function initFb(){
+  try{
+    firebase.initializeApp(FB_CONFIG);fbDb=firebase.firestore();fbAuth=firebase.auth();
+    fbAuth.signInAnonymously().then(()=>{fbOk=true;setStatus('on','Онлайн');loadFb();}).catch(()=>{fbOk=false;setStatus('','Офлайн');});
+  }catch(e){fbOk=false;setStatus('','Офлайн');}
+}
+function fbRef(){return fbDb.collection('apps').doc(APP_NAME).collection('users').doc(userId);}
+async function saveFb(){
+  if(!fbOk||fbBusy)return;
+  if(!appData.entries?.length&&!appData.settings?.claudeKey&&!appData.settings?.baseContext)return;
+  fbBusy=true;setStatus('sy','Сохранение...');
+  try{await fbRef().set({data:JSON.stringify(appData),ts:firebase.firestore.FieldValue.serverTimestamp(),by:userName},{merge:true});setStatus('on','Сохранено');}
+  catch(e){setStatus('','Ошибка');}finally{fbBusy=false;}
+}
+async function loadFb(){
+  if(window._fbL||!fbOk)return;window._fbL=true;fbBusy=true;setStatus('sy','Загрузка...');
+  try{
+    const doc=await fbRef().get();
+    if(doc.exists&&doc.data().data){
+      const remote=JSON.parse(doc.data().data);
+      appData={...appData,...remote};
+      if(!appData.settings.roles?.length)appData.settings.roles=JSON.parse(JSON.stringify(DEFAULT_ROLES));
+      saveLs();render();setStatus('on','Загружено');
+    }else setStatus('on','Готово');
+    setTimeout(checkMorningAuto,900);
+  }catch(e){setStatus('','Офлайн');}finally{fbBusy=false;window._fbL=false;}
+}
+
+// ═══ LOGIN ═══
 function doLogin(){
-  const n=$('inName').value.trim();
-  if(!n){toast('Введи имя');return;}
-  userName=n;userId=simpleHash(n.toLowerCase());lsKey=APP_NAME+'_'+userId;
+  const n=$('inName').value.trim();if(!n){toast('Введи логин');return;}
+  userName=n;userId=simpleHash(n);lsKey=APP_NAME+'_'+userId;
   localStorage.setItem(APP_NAME+'_last',n);
   loadLs();
   $('sLogin').classList.add('off');$('sMain').classList.remove('off');
   updateHeader();render();initFb();
-  toast('Привет, '+n.split(' ')[0]+'!');
+  toast('Привет, '+n.split(/[\s_]/)[0]+'!');
 }
-
 document.addEventListener('DOMContentLoaded',()=>{
   const last=localStorage.getItem(APP_NAME+'_last');
   if(last)$('inName').value=last;
   $('inName').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
+  // Auto-select type based on time
+  const m=getMode();
+  selType(m,document.getElementById('tb-'+m));
 });
 
-// ═══════════════════════════════════════════════════════════
-// HEADER
-// ═══════════════════════════════════════════════════════════
+// ═══ HEADER ═══
 function updateHeader(){
   const d=new Date();
-  $('hDate').textContent=DAYS[d.getDay()]+', '+d.getDate()+' '+MONTHS[d.getMonth()];
+  $('hDate').textContent=WD[d.getDay()]+', '+d.getDate()+' '+MO[d.getMonth()];
+  // FAB color by mode
   const mode=getMode();
-  const pill=$('modePill');
-  if(mode==='morning'){
-    pill.innerHTML='<div class="mode-dot" style="background:var(--mor)"></div><span style="color:var(--mor)">утро</span>';
-    pill.style.background='rgba(192,120,0,.08)';
-    $('fabBtn').style.background='var(--mor)';
-    $('fabBtn').style.boxShadow='0 3px 12px rgba(192,120,0,.28)';
-  }else{
-    pill.innerHTML='<div class="mode-dot" style="background:var(--eve)"></div><span style="color:var(--eve)">вечер</span>';
-    pill.style.background='rgba(74,64,120,.08)';
-    $('fabBtn').style.background='var(--acc)';
-    $('fabBtn').style.boxShadow='0 3px 12px rgba(26,122,230,.28)';
-  }
-  // streak
+  const fab=$('fabMain');
+  if(mode==='morning'){fab.style.background='var(--mor)';fab.style.boxShadow='0 3px 12px rgba(192,120,0,.25)';}
+  else{fab.style.background='var(--acc)';fab.style.boxShadow='0 3px 12px rgba(26,122,230,.25)';}
+  // Role pill
+  const role=getActiveRole();
+  const pill=$('rolePill');
+  pill.innerHTML=`<div class="role-pill-dot" style="background:${role.color}"></div><span style="color:${role.color}">${role.name}</span>`;
+  pill.style.background=role.color+'18';
+  pill.style.borderColor=role.color+'30';
+  // Streak
   const streak=calcStreak();
   $('statStreak').textContent=streak;
-  if(streak>0){$('streakEl').style.display='flex';$('streakN').textContent=streak+'д';}
-  else $('streakEl').style.display='none';
   $('statTotal').textContent=appData.entries?.length||0;
+  if(streak>1){$('streakEl').style.display='flex';$('streakN').textContent=streak+'д';}
+  else $('streakEl').style.display='none';
 }
 
 function calcStreak(){
-  const entries=appData.entries||[];
-  if(!entries.length)return 0;
-  const sorted=[...entries].sort((a,b)=>b.date.localeCompare(a.date));
-  let streak=0,cur=new Date();
-  cur.setHours(0,0,0,0);
-  for(const e of sorted){
-    const d=new Date(e.date+'T00:00:00');
-    const diff=Math.round((cur-d)/86400000);
-    if(diff===0||diff===1){streak++;cur=d;}else break;
-  }
-  return streak;
+  const e=appData.entries||[];if(!e.length)return 0;
+  const sorted=[...e].sort((a,b)=>b.date.localeCompare(a.date));
+  let s=0,cur=new Date();cur.setHours(0,0,0,0);
+  for(const x of sorted){const d=new Date(x.date+'T00:00:00'),diff=Math.round((cur-d)/86400000);if(diff===0||diff===1){s++;cur=d;}else break;}
+  return s;
 }
 
-// ═══════════════════════════════════════════════════════════
-// RENDER
-// ═══════════════════════════════════════════════════════════
+// ═══ RENDER ═══
 function render(){
   updateHeader();
   const mc=$('mainContent');
   const mode=getMode();
-  const entries=(appData.entries||[]).slice().sort((a,b)=>b.date.localeCompare(a.date));
-
+  const entries=(appData.entries||[]).slice().sort((a,b)=>b.createdAt-a.createdAt);
   let html='';
 
-  // — Утром: блок с утренним ответом на вчерашнюю запись
+  // Morning block
   if(mode==='morning'){
     const yest=new Date(Date.now()-86400000).toISOString().split('T')[0];
-    const yestEntry=entries.find(e=>e.date===yest);
+    const yE=entries.find(e=>e.date===yest&&e.type==='evening');
     html+=`<div class="morning-block">
       <div class="morning-lbl">
-        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/></svg>
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/></svg>
         утренний разгон
-      </div>`;
-    if(yestEntry?.morResp){
-      html+=`<div class="morning-text">"${esc(yestEntry.morResp)}"</div>`;
-    }else if(yestEntry){
-      html+=`<div class="morning-empty">Нажми + чтобы получить утренний разгон на основе вчерашней записи</div>`;
-    }else{
-      html+=`<div class="morning-empty">Нет вчерашней записи — добавь вечером, утром будет разгон</div>`;
-    }
-    html+=`</div>`;
+      </div>
+      ${yE?.morResp?`<div class="morning-text">"${esc(yE.morResp)}"</div>`:`<div class="morning-sub">${yE?'Идёт загрузка...':'Нет вечерней записи за вчера'}</div>`}
+    </div>`;
   }
 
-  // — Блок инсайта недели
+  // Week insight
   const wh=getWeekHash();
   html+=`<div class="ai-week" onclick="openWeekInsight()">
-    <div class="ai-week-lbl"><div class="ai-week-dot"></div>инсайт недели</div>`;
-  if(appData.weekInsight?.text&&appData.weekInsight?.weekHash===wh){
-    html+=`<div class="ai-week-text">"${esc(appData.weekInsight.text)}"</div>`;
-  }else{
-    html+=`<div class="ai-week-empty">Накопится 3+ записей за неделю — появится инсайт</div>`;
-  }
-  html+=`</div>`;
+    <div class="ai-week-lbl"><div class="ai-wdot"></div>инсайт недели</div>
+    ${appData.weekInsight?.text&&appData.weekInsight?.weekHash===wh
+      ?`<div class="ai-week-text">"${esc(appData.weekInsight.text)}"</div>`
+      :`<div class="ai-week-empty">Накопится 3+ записей — появится инсайт</div>`}
+  </div>`;
 
-  // — Стопка записей
-  if(entries.length===0){
+  // Entries stack
+  if(!entries.length){
     html+=`<div class="empty">
-      <div class="empty-icon"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></div>
-      <div class="empty-title">Нет записей</div>
-      <div class="empty-sub">Нажми + чтобы добавить<br>первую запись</div>
+      <div class="empty-ico"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></div>
+      <div class="empty-t">Нет записей</div>
+      <div class="empty-s">Нажми + чтобы начать</div>
     </div>`;
   }else{
-    html+=`<div class="sec">записи</div>
-    <div class="stack" id="eStack">`;
+    html+=`<div class="sec">записи</div><div class="stack" id="eStack">`;
     const show=entries.slice(deckIdx,deckIdx+3);
     show.forEach((e,i)=>{
       const cls=i===0?'top':i===1?'mid':'bot';
+      const role=appData.settings?.roles?.find(r=>r.id===e.role)||null;
       html+=`<div class="ecard ${cls}" id="ec${e.id}" onclick="openEntry('${e.id}')">
-        <div class="ecard-day">${formatDate(e.date)}</div>
+        <div class="ecard-header">
+          <span class="ecard-type" style="background:${typeBg(e.type)};color:${typeColor(e.type)}">${typeLabel(e.type)}</span>
+          <span class="ecard-day">${fmtDate(e.date)}${e.createdAt?' · '+fmtTime(e.createdAt):''}</span>
+        </div>
         <div class="ecard-mood-row">
-          <span style="font-size:11px;color:var(--t3)">настроение</span>
           <div class="mood-bar"><div class="mood-fill" style="width:${moodPct(e.mood)}%;background:${moodColor(e.mood)}"></div></div>
           <span style="font-size:11px;color:var(--t3)">${e.mood}/5</span>
         </div>
-        <div class="ecard-text">${esc(e.text)}</div>`;
-      if(e.eveResp){
-        html+=`<div class="ai-preview has">"${esc(e.eveResp)}"</div>`;
-      }else{
-        html+=`<div class="ai-preview none">ответ ещё не запрошен</div>`;
-      }
-      html+=`</div>`;
+        <div class="ecard-text">${esc(e.text)}</div>
+        ${e.response
+          ?`<div class="ai-preview has" style="color:${role?.color||'var(--eve)'};border-left-color:${role?.color||'var(--eve)'}50">"${esc(e.response)}"</div>`
+          :`<div class="ai-preview none">ответ не запрошен</div>`}
+      </div>`;
     });
-    html+=`</div>
-    <div class="swipe-hint">
-      <span style="font-size:13px">‹</span>
-      <span>листай — старые записи</span>
-      <span style="font-size:13px">›</span>
-    </div>`;
+    html+=`</div><div class="swipe-hint"><span style="font-size:13px">‹</span><span>листай между записями</span><span style="font-size:13px">›</span></div>`;
   }
-
   mc.innerHTML=html;
-  if(entries.length>0)initStackGesture(entries);
+  if(entries.length)initStackGesture(entries);
 }
 
-// ═══════════════════════════════════════════════════════════
-// STACK GESTURE
-// ═══════════════════════════════════════════════════════════
+// ═══ STACK GESTURE ═══
 function initStackGesture(entries){
   const stk=$('eStack');if(!stk)return;
   const top=stk.querySelector('.ecard.top');if(!top)return;
@@ -640,121 +556,96 @@ function initStackGesture(entries){
   if(cardGesture)cardGesture.destroy();
   cardGesture=new TinyGesture(top,{mouseSupport:true,pressThreshold:8});
   let dragging=false;
-  cardGesture.on('panstart',()=>{dragging=false;});
+  cardGesture.on('panstart',()=>dragging=false);
   cardGesture.on('panmove',()=>{
     const dx=cardGesture.touchMoveX;
     if(Math.abs(dx)>6)dragging=true;
     top.style.transition='none';
-    top.style.transform=`translateX(${dx*.85}px) rotate(${dx*.05}deg)`;
+    top.style.transform=`translateX(${dx*.85}px) rotate(${dx*.04}deg)`;
   });
   cardGesture.on('panend',()=>{
     const dx=cardGesture.touchMoveX,vx=cardGesture.velocityX;
     const commit=Math.abs(dx)>70||Math.abs(vx)>1.5;
-    if(commit&&dx<0){
+    if(commit){
+      const dir=dx<0?'left':'right';
       top.style.transition='transform .3s cubic-bezier(.22,1,.36,1),opacity .25s';
-      top.style.transform='translateX(-130%) rotate(-10deg)';
+      top.style.transform=dir==='left'?'translateX(-130%) rotate(-8deg)':'translateX(130%) rotate(8deg)';
       top.style.opacity='0';
-      deckIdx=Math.min(deckIdx+1,entries.length-1);
-      setTimeout(render,280);
-    }else if(commit&&dx>0){
-      deckIdx=Math.max(deckIdx-1,0);
-      top.style.transition='transform .3s cubic-bezier(.22,1,.36,1),opacity .25s';
-      top.style.transform='translateX(130%) rotate(10deg)';
-      top.style.opacity='0';
+      if(dir==='left')deckIdx=Math.min(deckIdx+1,entries.length-1);
+      else deckIdx=Math.max(deckIdx-1,0);
       setTimeout(render,280);
     }else{
       top.style.transition='transform .4s cubic-bezier(.175,.885,.32,1.275)';
       top.style.transform='';
     }
   });
-  cardGesture.on('tap',()=>{
-    if(!dragging){const e=entries[deckIdx];if(e)openEntry(e.id);}
-  });
+  cardGesture.on('tap',()=>{if(!dragging){const e=entries[deckIdx];if(e)openEntry(e.id);}});
 }
 
-// ═══════════════════════════════════════════════════════════
-// SHEETS
-// ═══════════════════════════════════════════════════════════
-function openSheet(id){
-  $('ov').classList.add('on');
-  ['shEntry','shAdd','shWeek','shSettings'].forEach(s=>$(s).classList.remove('on'));
-  $(id).classList.add('on');
-}
-function closeSheet(){
-  $('ov').classList.remove('on');
-  ['shEntry','shAdd','shWeek','shSettings'].forEach(s=>$(s).classList.remove('on'));
-}
+// ═══ SHEETS ═══
+const ALL_SHEETS=['shEntry','shAdd','shWeek','shRole','shSettings','shRole2'];
+function openSheet(id){$('ov').classList.add('on');ALL_SHEETS.forEach(s=>$(s).classList.remove('on'));$(id).classList.add('on');}
+function closeSheet(){$('ov').classList.remove('on');ALL_SHEETS.forEach(s=>$(s).classList.remove('on'));}
 
-// ─── ENTRY DETAIL ────────────────────────────────────────
+// ═══ ENTRY DETAIL ═══
 function openEntry(id){
-  const e=(appData.entries||[]).find(x=>x.id===id);
-  if(!e)return;
+  const e=(appData.entries||[]).find(x=>x.id===id);if(!e)return;
+  const role=appData.settings?.roles?.find(r=>r.id===e.role)||null;
   const moods=['','😩','😕','😐','🙂','😌'];
-  const mode=getMode();
-
-  let aiSection='';
-  // Вечерний ответ
-  if(e.eveResp){
-    aiSection+=`<div class="sh-section" style="border-color:rgba(74,64,120,.18);background:rgba(74,64,120,.02)">
-      <div class="ai-ans-lbl"><div class="sh-slbl" style="color:var(--eve);margin:0">вечерний ответ</div></div>
-      <div class="ai-answer">"${esc(e.eveResp)}"</div>
+  let respBlock='';
+  if(e.response){
+    respBlock=`<div class="sh-sec" style="border-color:${(role?.color||'#4A4078')}30;background:${(role?.color||'#4A4078')}08">
+      <div class="ai-ans-hdr">
+        <div class="sh-slbl" style="color:${role?.color||'var(--eve)'};margin:0">ответ</div>
+        ${role?`<div class="role-tag" style="background:${role.color}15;color:${role.color}">${role.name}</div>`:''}
+      </div>
+      <div class="ai-answer">"${esc(e.response)}"</div>
     </div>`;
-  }
-  // Утренний ответ
-  if(e.morResp){
-    aiSection+=`<div class="sh-section" style="border-color:rgba(192,120,0,.18);background:rgba(192,120,0,.02)">
-      <div class="ai-ans-lbl"><div class="sh-slbl" style="color:var(--mor);margin:0">утренний разгон</div></div>
-      <div class="ai-answer" style="color:var(--t1)">"${esc(e.morResp)}"</div>
-    </div>`;
-  }
-  if(!e.eveResp&&!e.morResp){
-    aiSection+=`<div class="sh-section" style="border-color:rgba(74,64,120,.1);background:rgba(74,64,120,.02)">
+  }else{
+    respBlock=`<div class="sh-sec" style="border-color:rgba(74,64,120,.12)">
       <div class="sh-slbl" style="color:var(--eve)">ответ Claude</div>
-      <div class="sh-stext" style="color:var(--t3);font-style:italic">Ещё не запрошен. Нажми кнопку ниже.</div>
+      <div class="sh-stext" style="color:var(--t3);font-style:italic">Ещё не запрошен.</div>
     </div>`;
   }
-
-  const btnLabel=mode==='evening'
-    ? (e.eveResp?'Переспросить вечером':'Вечерний ответ')
-    : (e.morResp?'Переспросить утром':'Утренний разгон');
-  const btnColor=mode==='evening'?'btn-eve':'';
-
   $('shEntryBody').innerHTML=`
-    <div class="sh-title">${formatDate(e.date)}</div>
-    <div class="sh-sub">настроение ${moods[e.mood]} ${e.mood}/5</div>
-    <div class="sh-section">
-      <div class="sh-slbl">запись</div>
-      <div class="sh-stext">${esc(e.text)}</div>
-    </div>
-    ${aiSection}
+    <div class="sh-title">${fmtDate(e.date)}${e.createdAt?' · '+fmtTime(e.createdAt):''}</div>
+    <div class="sh-sub">${typeLabel(e.type)} · настроение ${moods[e.mood]} ${e.mood}/5</div>
+    <div class="sh-sec"><div class="sh-slbl">запись</div><div class="sh-stext">${esc(e.text)}</div></div>
+    ${e.type!=='morning'?respBlock:''}
     <div class="sh-btns">
       <button class="btn-g" onclick="closeSheet()">Закрыть</button>
-      <button class="btn-p ${btnColor}" id="askBtn" onclick="askClaude('${id}',this)">${btnLabel}</button>
+      ${e.type!=='morning'
+        ?`<button class="btn-p" id="askBtn" style="background:${getActiveRole().color}" onclick="askClaude('${id}',this)">${e.response?'Переспросить':'Спросить Claude'}</button>`
+        :''}
     </div>
     <div style="height:6px"></div>
-    <div class="sh-btns">
-      <button class="btn-g btn-del" onclick="deleteEntry('${id}')">Удалить</button>
-    </div>`;
+    <div class="sh-btns"><button class="btn-g btn-del" onclick="delEntry('${id}')">Удалить запись</button></div>`;
   openSheet('shEntry');
 }
 
-function deleteEntry(id){
-  if(!confirm('Удалить эту запись?'))return;
+function delEntry(id){
+  if(!confirm('Удалить?'))return;
   appData.entries=(appData.entries||[]).filter(x=>x.id!==id);
-  deckIdx=Math.max(0,deckIdx-1);
-  sync();closeSheet();render();toast('Удалено');
+  deckIdx=Math.max(0,deckIdx-1);sync();closeSheet();render();toast('Удалено');
 }
 
-// ─── ADD ENTRY ──────────────────────────────────────────
-let selMoodVal=4;
+// ═══ ADD ENTRY ═══
 function openAdd(){
   selMoodVal=4;
-  const mode=getMode();
-  $('addTitle').textContent=mode==='morning'?'Доброе утро':'Как прошёл день?';
   $('addText').value='';
-  document.querySelectorAll('.mood-opt').forEach((o,i)=>{o.classList.toggle('sel',i===3);});
+  document.querySelectorAll('.mood-opt').forEach((o,i)=>o.classList.toggle('sel',i===3));
+  // Auto-select type by time
+  const m=getMode();
+  selType(m,document.getElementById('tb-'+m));
   openSheet('shAdd');
-  setTimeout(()=>$('addText').focus(),350);
+  setTimeout(()=>$('addText').focus(),380);
+}
+function selType(type,el){
+  addType=type;
+  document.querySelectorAll('.type-btn').forEach(b=>{b.classList.remove('sel');b.style.background='transparent';b.style.borderColor='';b.style.color='';});
+  el.classList.add('sel');
+  const c=type==='morning'?'var(--mor)':type==='evening'?'var(--eve)':'var(--t2)';
+  el.style.background=c;el.style.borderColor=c;el.style.color='#fff';
 }
 function selMood(el,v){
   selMoodVal=v;
@@ -764,166 +655,198 @@ function selMood(el,v){
 function saveEntry(){
   const txt=$('addText').value.trim();
   if(!txt){toast('Напиши что-нибудь');return;}
-  const today=todayISO();
-  const existing=(appData.entries||[]).find(e=>e.date===today);
-  if(existing){
-    existing.text=txt;existing.mood=selMoodVal;existing.updatedAt=Date.now();
-    toast('Запись обновлена');
-  }else{
-    if(!appData.entries)appData.entries=[];
-    appData.entries.push({id:uid(),date:today,mood:selMoodVal,text:txt,eveResp:null,morResp:null,createdAt:Date.now()});
-    toast('Сохранено ✓');
-  }
-  deckIdx=0;sync();closeSheet();render();
+  if(!appData.entries)appData.entries=[];
+  appData.entries.push({id:uid(),date:todayISO(),type:addType,mood:selMoodVal,text:txt,response:null,morResp:null,role:null,createdAt:Date.now()});
+  deckIdx=0;sync();closeSheet();render();toast('Сохранено ✓');
 }
 
-// ─── WEEK INSIGHT ──────────────────────────────────────
+// ═══ WEEK INSIGHT ═══
 async function openWeekInsight(){
-  const entries=(appData.entries||[]);
   const wh=getWeekHash();
-
-  // Считаем записи за последние 7 дней
   const weekAgo=new Date(Date.now()-7*86400000).toISOString().split('T')[0];
-  const recent=entries.filter(e=>e.date>=weekAgo);
-
+  const recent=(appData.entries||[]).filter(e=>e.date>=weekAgo);
   $('shWeekBody').innerHTML=`
     <div class="sh-title">Инсайт недели</div>
-    <div class="sh-sub">${recent.length} ${plurEntries(recent.length)} за 7 дней</div>
+    <div class="sh-sub">${recent.length} ${plural(recent.length,'запись','записи','записей')} за 7 дней</div>
     ${appData.weekInsight?.text&&appData.weekInsight?.weekHash===wh
-      ?`<div class="sh-section" style="border-color:rgba(26,122,230,.15);background:rgba(26,122,230,.02)">
-          <div class="sh-slbl" style="color:var(--acc)">саммари недели</div>
+      ?`<div class="sh-sec" style="border-color:rgba(26,122,230,.15)">
+          <div class="sh-slbl" style="color:var(--acc)">саммари</div>
           <div class="ai-answer" style="color:var(--t1)">"${esc(appData.weekInsight.text)}"</div>
         </div>`
-      :`<div class="sh-section">
-          <div class="sh-slbl">саммари</div>
-          <div class="sh-stext" style="color:var(--t3);font-style:italic">${recent.length<3?'Нужно минимум 3 записи за неделю.':'Ещё не сгенерировано.'}</div>
-        </div>`
-    }
+      :`<div class="sh-sec"><div class="sh-slbl">саммари</div>
+          <div class="sh-stext" style="color:var(--t3);font-style:italic">${recent.length<3?'Нужно минимум 3 записи.':'Нажми кнопку ниже.'}</div>
+        </div>`}
     <div class="sh-btns">
       <button class="btn-g" onclick="closeSheet()">Закрыть</button>
-      ${recent.length>=3
-        ?`<button class="btn-p" id="weekBtn" onclick="genWeekInsight(this)">
-            ${appData.weekInsight?.weekHash===wh?'Обновить инсайт':'Сгенерировать'}
-          </button>`
-        :''}
+      ${recent.length>=3?`<button class="btn-p" id="wBtn" onclick="genWeek(this)">${appData.weekInsight?.weekHash===wh?'Обновить':'Сгенерировать'}</button>`:''}
     </div>`;
   openSheet('shWeek');
 }
-
-async function genWeekInsight(btn){
-  const key=appData.settings?.claudeKey;
-  if(!key){toast('Нужен API ключ в настройках ⚙');return;}
-  btn.disabled=true;
-  btn.innerHTML='<div class="spin"></div>';
+async function genWeek(btn){
+  const key=appData.settings?.claudeKey;if(!key){toast('Нужен API ключ ⚙');return;}
+  btn.disabled=true;btn.innerHTML='<span class="spin"></span>';
   const weekAgo=new Date(Date.now()-7*86400000).toISOString().split('T')[0];
   const recent=(appData.entries||[]).filter(e=>e.date>=weekAgo).sort((a,b)=>a.date.localeCompare(b.date));
-  const lines=recent.map(e=>`${e.date} | настроение ${e.mood}/5 | ${e.text}`).join('\n');
-  const prompt=`Записи дневника за 7 дней:\n${lines}\n\nНапиши один абзац (2–3 предложения) — инсайт о паттернах этой недели. Тон: внимательный, без оценок. Не перечисляй факты — найди связь или паттерн. Только текст, без заголовка.`;
+  const lines=recent.map(e=>`${e.date} ${typeLabel(e.type)} ${e.mood}/5: ${e.text}`).join('\n');
+  const ctx=appData.settings?.baseContext||'';
+  const sys=ctx?ctx+'\n\n':'';
   try{
-    const result=await callClaude(prompt,400);
-    appData.weekInsight={text:result.trim(),weekHash:getWeekHash(),generatedAt:Date.now()};
+    const r=await callClaude(sys+'Записи дневника за неделю:\n'+lines+'\n\nНапиши 2–3 предложения — инсайт о паттерне недели. Без перечисления фактов — найди связь. Только текст.',400);
+    appData.weekInsight={text:r.trim(),weekHash:getWeekHash(),generatedAt:Date.now()};
     sync();openWeekInsight();toast('Инсайт готов');
   }catch(e){toast('Ошибка: '+e.message);}
 }
 
-function plurEntries(n){if(n===1)return'запись';if(n>=2&&n<=4)return'записи';return'записей';}
-
-// ─── ASK CLAUDE PER ENTRY ───────────────────────────────
+// ═══ ASK CLAUDE PER ENTRY ═══
 async function askClaude(id,btn){
-  const key=appData.settings?.claudeKey;
-  if(!key){toast('Нужен API ключ в настройках ⚙');return;}
-  const e=(appData.entries||[]).find(x=>x.id===id);
-  if(!e)return;
-  btn.disabled=true;
-  btn.innerHTML='<div class="spin"></div>';
-  const mode=getMode();
-  const sysPrompt=mode==='morning'
-    ?(appData.settings?.morPrompt||DEFAULT_MOR_PROMPT)
-    :(appData.settings?.evePrompt||DEFAULT_EVE_PROMPT);
-  // Для утреннего режима — отправляем вчерашнюю запись
-  const entryText=`Запись от ${e.date} (настроение ${e.mood}/5):\n${e.text}`;
+  const key=appData.settings?.claudeKey;if(!key){toast('Нужен API ключ ⚙');return;}
+  const e=(appData.entries||[]).find(x=>x.id===id);if(!e)return;
+  btn.disabled=true;btn.innerHTML='<span class="spin"></span>';
+  const role=getActiveRole();
+  const ctx=appData.settings?.baseContext||'';
+  const sys=[ctx,role.prompt].filter(Boolean).join('\n\n');
+  const userMsg=`${typeLabel(e.type)}, ${e.date}, настроение ${e.mood}/5:\n${e.text}`;
   try{
-    const result=await callClaudeWithSystem(sysPrompt,entryText,350);
-    if(mode==='morning')e.morResp=result.trim();
-    else e.eveResp=result.trim();
+    const r=await callClaudeSystem(sys,userMsg,350);
+    e.response=r.trim();e.role=role.id;
     sync();openEntry(id);toast('Ответ готов');
-  }catch(err){
-    toast('Ошибка: '+err.message);
-    btn.disabled=false;btn.textContent='Попробовать снова';
-  }
+  }catch(err){toast('Ошибка: '+err.message);btn.disabled=false;btn.textContent='Попробовать снова';}
 }
 
-// ─── SETTINGS ────────────────────────────────────────────
+// ═══ MORNING AUTO ═══
+async function checkMorningAuto(){
+  if(getMode()!=='morning')return;
+  const key=appData.settings?.claudeKey;if(!key)return;
+  const yest=new Date(Date.now()-86400000).toISOString().split('T')[0];
+  const yE=(appData.entries||[]).find(e=>e.date===yest&&e.type==='evening');
+  if(!yE||yE.morResp)return;
+  const mor=appData.settings?.morPrompt||'';if(!mor)return;
+  try{
+    const ctx=appData.settings?.baseContext||'';
+    const sys=[ctx,mor].filter(Boolean).join('\n\n');
+    const r=await callClaudeSystem(sys,`Вечерняя запись от ${yE.date}, настроение ${yE.mood}/5:\n${yE.text}`,350);
+    yE.morResp=r.trim();sync();render();
+  }catch(e){console.log('[morning auto]',e.message);}
+}
+
+// ═══ ROLE PICKER ═══
+function openRolePicker(){
+  const roles=appData.settings?.roles||DEFAULT_ROLES;
+  const active=appData.settings?.activeRole||'kat';
+  $('rolePickerGrid').innerHTML=roles.map(r=>`
+    <div class="rp-card ${r.id===active?'active':''}" style="${r.id===active?`border-color:${r.color}`:''}" onclick="setActiveRole('${r.id}')">
+      <div class="rp-dot" style="background:${r.color}"></div>
+      <div class="rp-name">${esc(r.name)}</div>
+      <div class="rp-style">${esc(r.prompt.slice(0,60))}...</div>
+    </div>`).join('');
+  openSheet('shRole');
+}
+function setActiveRole(id){
+  appData.settings.activeRole=id;sync();closeSheet();updateHeader();toast('Роль изменена');
+}
+
+// ═══ SETTINGS ═══
 function openSettings(){
   $('sKey').value=appData.settings?.claudeKey||'';
-  $('sEve').value=appData.settings?.evePrompt||DEFAULT_EVE_PROMPT;
-  $('sMor').value=appData.settings?.morPrompt||DEFAULT_MOR_PROMPT;
+  $('sCtx').value=appData.settings?.baseContext||'';
+  $('sMor').value=appData.settings?.morPrompt||'';
+  renderRolesList();
   openSheet('shSettings');
+}
+function renderRolesList(){
+  const roles=appData.settings?.roles||DEFAULT_ROLES;
+  $('rolesListSettings').innerHTML=roles.map(r=>`
+    <div class="role-item" onclick="editRole('${r.id}')">
+      <div class="role-item-dot" style="background:${r.color}"></div>
+      <div class="role-item-name">${esc(r.name)}</div>
+      <div class="role-item-edit">Изменить</div>
+    </div>`).join('');
 }
 function saveSettings(){
   if(!appData.settings)appData.settings={};
   appData.settings.claudeKey=$('sKey').value.trim();
-  appData.settings.evePrompt=$('sEve').value.trim()||DEFAULT_EVE_PROMPT;
-  appData.settings.morPrompt=$('sMor').value.trim()||DEFAULT_MOR_PROMPT;
+  appData.settings.baseContext=$('sCtx').value.trim();
+  appData.settings.morPrompt=$('sMor').value.trim();
   sync();closeSheet();toast('Настройки сохранены');
 }
 
-// ═══════════════════════════════════════════════════════════
-// CLAUDE API
-// ═══════════════════════════════════════════════════════════
-async function callClaude(userMsg, maxTokens=500){
-  return callClaudeWithSystem('',userMsg,maxTokens);
+// ═══ ROLE EDIT ═══
+function editRole(id){
+  editingRoleId=id;
+  const roles=appData.settings?.roles||[];
+  const r=roles.find(x=>x.id===id)||{id:uid(),name:'',color:'#8A8985',prompt:''};
+  $('shRole2Body').innerHTML=`
+    <div class="sh-title">${id?'Редактировать роль':'Новая роль'}</div>
+    <div class="sh-sub" style="margin-bottom:14px">Название и стиль ответа Claude</div>
+    <div class="set-field">
+      <span class="set-lbl">Название</span>
+      <input class="set-inp" id="rName" value="${esc(r.name)}" placeholder="Например: Философ" maxlength="20">
+    </div>
+    <div class="set-field">
+      <span class="set-lbl">Цвет</span>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:2px">
+        ${['#4A4078','#2EBD52','#1A7AE6','#8A8985','#E8453A','#E89A0A','#A855C7','#4ABDD4'].map(c=>
+          `<div onclick="selRoleColor(this,'${c}')" style="width:28px;height:28px;border-radius:50%;background:${c};cursor:pointer;border:2px solid ${r.color===c?c:'transparent'};outline:2px solid ${r.color===c?c+'40':'transparent'};transition:all .15s" data-color="${c}"></div>`
+        ).join('')}
+      </div>
+      <input type="hidden" id="rColor" value="${r.color}">
+    </div>
+    <div class="set-field">
+      <span class="set-lbl">Промпт роли</span>
+      <textarea class="set-inp" id="rPrompt" rows="6">${esc(r.prompt)}</textarea>
+      <div class="set-hint">Только стиль ответа — без личного контекста. Контекст добавляется автоматически из поля «Контекст обо мне».</div>
+    </div>
+    <div class="sh-btns">
+      ${id?`<button class="btn-g btn-del" onclick="deleteRole('${id}')">Удалить</button>`:'<button class="btn-g" onclick="openSettings()">Отмена</button>'}
+      <button class="btn-p" onclick="saveRole('${id}')">Сохранить</button>
+    </div>`;
+  openSheet('shRole2');
+}
+function openAddRole(){editingRoleId=null;editRole(null);}
+function selRoleColor(el,color){
+  $('rColor').value=color;
+  document.querySelectorAll('[data-color]').forEach(d=>{
+    const c=d.dataset.color;
+    d.style.border=`2px solid ${c===color?c:'transparent'}`;
+    d.style.outline=`2px solid ${c===color?c+'40':'transparent'}`;
+  });
+}
+function saveRole(id){
+  const name=$('rName').value.trim();
+  const prompt=$('rPrompt').value.trim();
+  const color=$('rColor').value||'#8A8985';
+  if(!name||!prompt){toast('Заполни название и промпт');return;}
+  if(!appData.settings.roles)appData.settings.roles=JSON.parse(JSON.stringify(DEFAULT_ROLES));
+  if(id){
+    const idx=appData.settings.roles.findIndex(r=>r.id===id);
+    if(idx>=0)appData.settings.roles[idx]={id,name,color,prompt};
+  }else{
+    appData.settings.roles.push({id:uid(),name,color,prompt});
+  }
+  sync();openSettings();toast('Роль сохранена');
+}
+function deleteRole(id){
+  if(!confirm('Удалить роль?'))return;
+  appData.settings.roles=(appData.settings.roles||[]).filter(r=>r.id!==id);
+  if(appData.settings.activeRole===id)appData.settings.activeRole=appData.settings.roles[0]?.id||'kat';
+  sync();openSettings();toast('Удалено');
 }
 
-async function callClaudeWithSystem(systemPrompt, userMsg, maxTokens=500){
-  const key=appData.settings?.claudeKey;
-  if(!key)throw new Error('API ключ не задан');
-  const body={
-    model:'claude-sonnet-4-6',
-    max_tokens:maxTokens,
-    messages:[{role:'user',content:userMsg}]
-  };
-  if(systemPrompt)body.system=systemPrompt;
+// ═══ CLAUDE API ═══
+async function callClaude(userMsg,maxTokens=500){return callClaudeSystem('',userMsg,maxTokens);}
+async function callClaudeSystem(sys,userMsg,maxTokens=500){
+  const key=appData.settings?.claudeKey;if(!key)throw new Error('API ключ не задан');
+  const body={model:'claude-sonnet-4-6',max_tokens:maxTokens,messages:[{role:'user',content:userMsg}]};
+  if(sys)body.system=sys;
   const r=await fetch('https://api.anthropic.com/v1/messages',{
     method:'POST',
-    headers:{
-      'Content-Type':'application/json',
-      'x-api-key':key,
-      'anthropic-version':'2023-06-01',
-      'anthropic-dangerous-direct-browser-access':'true'
-    },
+    headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
     body:JSON.stringify(body)
   });
   const raw=await r.text();
   console.log('[Claude]',r.status,raw.slice(0,200));
-  if(!r.ok){
-    let msg='HTTP '+r.status;
-    try{msg=JSON.parse(raw)?.error?.message||msg;}catch(_){}
-    throw new Error(msg);
-  }
+  if(!r.ok){let m='HTTP '+r.status;try{m=JSON.parse(raw)?.error?.message||m;}catch(_){}throw new Error(m);}
   return JSON.parse(raw).content[0].text;
-}
-
-// ═══════════════════════════════════════════════════════════
-// MORNING AUTO-RESPONSE
-// При открытии утром — если есть вчерашняя запись без morResp,
-// автоматически запрашиваем утренний разгон
-// ═══════════════════════════════════════════════════════════
-async function checkMorningAuto(){
-  if(getMode()!=='morning')return;
-  const key=appData.settings?.claudeKey;
-  if(!key)return;
-  const yest=new Date(Date.now()-86400000).toISOString().split('T')[0];
-  const yestEntry=(appData.entries||[]).find(e=>e.date===yest);
-  if(!yestEntry||yestEntry.morResp)return;
-  // Тихо запрашиваем — без уведомлений, просто обновляем
-  try{
-    const sysPrompt=appData.settings?.morPrompt||DEFAULT_MOR_PROMPT;
-    const txt=`Запись от ${yestEntry.date} (настроение ${yestEntry.mood}/5):\n${yestEntry.text}`;
-    const result=await callClaudeWithSystem(sysPrompt,txt,350);
-    yestEntry.morResp=result.trim();
-    sync();render();
-  }catch(e){console.log('[morning auto]',e.message);}
 }
 </script>
 </body>
