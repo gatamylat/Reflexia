@@ -84,7 +84,7 @@ input,textarea{-webkit-user-select:auto;user-select:auto}
 
 /* ENTRIES */
 .sec{font-size:11px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:var(--t3);margin-bottom:8px;margin-top:2px}
-.stack{position:relative;height:215px;margin-bottom:8px}
+.stack{position:relative;height:280px;margin-bottom:8px}
 .ecard{position:absolute;left:0;right:0;top:0;background:var(--surf);border-radius:12px;border:0.5px solid var(--brd2);box-shadow:var(--sh);padding:12px 14px;cursor:pointer;will-change:transform}
 .ecard.top{z-index:3}
 .ecard.mid{transform:translateY(5px) scale(.97);z-index:2;pointer-events:none}
@@ -96,7 +96,7 @@ input,textarea{-webkit-user-select:auto;user-select:auto}
 .mood-bar{flex:1;height:3px;background:rgba(40,35,20,.06);border-radius:2px;overflow:hidden}
 @media(prefers-color-scheme:dark){.mood-bar{background:rgba(255,255,255,.08)}}
 .mood-fill{height:100%;border-radius:2px}
-.ecard-text{font-size:13px;color:var(--t2);line-height:1.45;margin-bottom:6px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.ecard-text{font-size:13px;color:var(--t2);line-height:1.45;margin-bottom:6px;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
 .ai-preview{font-family:var(--fs);font-style:italic;font-size:12px;line-height:1.4;padding-left:8px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;border-left:2px solid}
 .ai-preview.none{color:var(--t3);border-left-color:var(--brd2);font-style:normal;font-family:var(--fn)}
 
@@ -110,7 +110,7 @@ input,textarea{-webkit-user-select:auto;user-select:auto}
 .empty-s{font-size:13px;line-height:1.5}
 
 /* BOTTOM BAR */
-.bbar{padding:8px 20px;padding-bottom:calc(10px + var(--sb));background:rgba(250,249,245,.96);border-top:0.5px solid var(--brd);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.bbar{padding:8px 20px;padding-bottom:10px;background:rgba(250,249,245,.96);border-top:0.5px solid var(--brd);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
 @media(prefers-color-scheme:dark){.bbar{background:rgba(26,26,29,.96)}}
 .bbar-stats{display:flex;gap:16px}
 .sn{font-family:var(--fs);font-size:18px;font-weight:500;color:var(--t1);line-height:1}
@@ -199,11 +199,36 @@ input,textarea{-webkit-user-select:auto;user-select:auto}
 @keyframes dotpulse{0%,80%,100%{opacity:.2}40%{opacity:1}}
 @keyframes fadein{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 .fi{animation:fadein .3s cubic-bezier(.22,1,.36,1)}
+
+/* REVEAL CARD */
+.reveal-wrap{position:fixed;inset:0;z-index:600;display:flex;flex-direction:column;pointer-events:none;opacity:0;transition:opacity .4s}
+.reveal-wrap.on{opacity:1;pointer-events:all}
+.reveal-bg{position:absolute;inset:0;background:rgba(20,18,10,.5);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.reveal-card{position:relative;margin:auto 12px;max-height:88vh;overflow-y:auto;background:var(--surf);border-radius:20px;padding:32px 24px 28px;box-shadow:0 24px 80px rgba(10,8,4,.25);transform:scale(.92) translateY(20px);transition:transform .45s cubic-bezier(.22,1,.36,1);display:flex;flex-direction:column;gap:16px}
+.reveal-wrap.on .reveal-card{transform:scale(1) translateY(0)}
+.reveal-wrap.out{opacity:0;transition:opacity .3s}
+.reveal-wrap.out .reveal-card{transform:scale(.95) translateY(10px);transition:transform .3s}
+.reveal-role{display:inline-flex;align-items:center;gap:6px;align-self:flex-start}
+.reveal-role-dot{width:7px;height:7px;border-radius:50%}
+.reveal-role-name{font-size:11px;font-weight:600;letter-spacing:.5px;text-transform:uppercase}
+.reveal-type{font-size:11px;color:var(--t3);font-weight:500;letter-spacing:.3px}
+.reveal-text{font-family:var(--fs);font-style:italic;font-size:20px;line-height:1.55;color:var(--t1);letter-spacing:-.2px}
+.reveal-src{font-size:12px;color:var(--t3);line-height:1.5;padding-top:4px;border-top:0.5px solid var(--brd)}
+.reveal-src b{font-weight:500;color:var(--t2);font-style:normal}
+.reveal-mood{display:flex;align-items:center;gap:8px}
+.reveal-mood-bar{flex:1;height:3px;background:rgba(40,35,20,.06);border-radius:2px;overflow:hidden}
+@media(prefers-color-scheme:dark){.reveal-mood-bar{background:rgba(255,255,255,.08)}}
+.reveal-mood-fill{height:100%;border-radius:2px}
+.reveal-hint{font-size:11px;color:var(--t3);text-align:center;margin-top:4px;opacity:.7}
 </style>
 </head>
 <body>
 <div class="app">
   <div class="toast" id="toast"></div>
+  <div class="reveal-wrap" id="revealWrap" onclick="dismissReveal()">
+    <div class="reveal-bg"></div>
+    <div class="reveal-card" id="revealCard"></div>
+  </div>
   <div class="overlay" id="ov" onclick="closeSheet()"></div>
 
   <!-- LOGIN -->
@@ -229,7 +254,7 @@ input,textarea{-webkit-user-select:auto;user-select:auto}
         </div>
         <div class="hdr-right">
           <div class="role-pill" id="rolePill" onclick="openRolePicker()"></div>
-          <div class="streak" id="streakEl" style="display:none"><div class="streak-dot"></div><span id="streakN">0д</span></div>
+          <div class="streak" id="streakEl" style="display:none"><div class="streak-dot"></div><span id="streakN">0</span></div>
           <button class="icon-btn" onclick="openSettings()">
             <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
           </button>
@@ -473,11 +498,11 @@ function updateHeader(){
   pill.innerHTML=`<div class="role-pill-dot" style="background:${role.color}"></div><span style="color:${role.color}">${role.name}</span>`;
   pill.style.background=role.color+'18';
   pill.style.borderColor=role.color+'30';
-  // Streak
-  const streak=calcStreak();
-  $('statStreak').textContent=streak;
-  $('statTotal').textContent=appData.entries?.length||0;
-  if(streak>1){$('streakEl').style.display='flex';$('streakN').textContent=streak+'д';}
+  // Top badge = entries count
+  const totalEntries=appData.entries?.length||0;
+  $('statStreak').textContent=calcStreak();
+  $('statTotal').textContent=totalEntries;
+  if(totalEntries>0){$('streakEl').style.display='flex';$('streakN').textContent=totalEntries+'зап';}
   else $('streakEl').style.display='none';
 }
 
@@ -716,8 +741,38 @@ async function askClaude(id,btn){
   try{
     const r=await callClaudeSystem(sys,userMsg,350);
     e.response=r.trim();e.role=role.id;
-    sync();openEntry(id);toast('Ответ готов');
+    sync();closeSheet();showReveal(e,role);
   }catch(err){toast('Ошибка: '+err.message);btn.disabled=false;btn.textContent='Попробовать снова';}
+}
+
+// ═══ REVEAL CARD ═══
+function showReveal(entry,role){
+  const moods=['','😩','😕','😐','🙂','😌'];
+  const textSnip=entry.text.length>90?entry.text.slice(0,90)+'…':entry.text;
+  $('revealCard').innerHTML=`
+    <div class="reveal-role">
+      <div class="reveal-role-dot" style="background:${role.color}"></div>
+      <div class="reveal-role-name" style="color:${role.color}">${esc(role.name)}</div>
+    </div>
+    <div class="reveal-text">"${esc(entry.response)}"</div>
+    <div class="reveal-src">
+      <div class="reveal-mood">
+        <span style="font-size:15px">${moods[entry.mood]||'😐'}</span>
+        <div class="reveal-mood-bar"><div class="reveal-mood-fill" style="width:${moodPct(entry.mood)}%;background:${moodColor(entry.mood)}"></div></div>
+        <span style="font-size:11px;color:var(--t3)">${entry.mood}/5</span>
+      </div>
+      <div style="margin-top:8px"><b>${typeLabel(entry.type)}</b> · ${fmtDate(entry.date)} · ${fmtTime(entry.createdAt)}</div>
+      <div style="margin-top:4px;color:var(--t3);font-style:italic">${esc(textSnip)}</div>
+    </div>
+    <div class="reveal-hint">нажми чтобы закрыть</div>`;
+  const w=$('revealWrap');
+  w.classList.remove('out');
+  w.classList.add('on');
+}
+function dismissReveal(){
+  const w=$('revealWrap');
+  w.classList.add('out');
+  setTimeout(()=>{w.classList.remove('on','out');render();},350);
 }
 
 // ═══ MORNING AUTO ═══
@@ -807,7 +862,7 @@ function editRole(id){
     </div>
     <div class="sh-btns">
       ${id?`<button class="btn-g btn-del" onclick="deleteRole('${id}')">Удалить</button>`:'<button class="btn-g" onclick="openSettings()">Отмена</button>'}
-      <button class="btn-p" onclick="saveRole('${id}')">Сохранить</button>
+      <button class="btn-p" onclick="saveRole()">Сохранить</button>
     </div>`;
   openSheet('shRole2');
 }
@@ -820,7 +875,8 @@ function selRoleColor(el,color){
     d.style.outline=`2px solid ${c===color?c+'40':'transparent'}`;
   });
 }
-function saveRole(id){
+function saveRole(){
+  const id=editingRoleId;
   const name=$('rName').value.trim();
   const prompt=$('rPrompt').value.trim();
   const color=$('rColor').value||'#8A8985';
