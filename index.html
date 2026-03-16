@@ -724,8 +724,8 @@ async function genWeek(btn){
   try{
     const r=await callClaude(sys+'Записи дневника за неделю:\n'+lines+'\n\nНапиши 2–3 предложения — инсайт о паттерне недели. Без перечисления фактов — найди связь. Только текст.',400);
     appData.weekInsight={text:r.trim(),weekHash:getWeekHash(),generatedAt:Date.now()};
-    sync();openWeekInsight();toast('Инсайт готов');
-  }catch(e){toast('Ошибка: '+e.message);}
+    sync();closeSheet();showWeekReveal(appData.weekInsight.text,recent.length);
+  }catch(e){toast('Ошибка: '+e.message);btn.disabled=false;btn.textContent='Попробовать снова';}
 }
 
 // ═══ ASK CLAUDE PER ENTRY ═══
@@ -763,6 +763,21 @@ function showReveal(entry,role){
       </div>
       <div style="margin-top:8px"><b>${typeLabel(entry.type)}</b> · ${fmtDate(entry.date)} · ${fmtTime(entry.createdAt)}</div>
       <div style="margin-top:4px;color:var(--t3);font-style:italic">${esc(textSnip)}</div>
+    </div>
+    <div class="reveal-hint">нажми чтобы закрыть</div>`;
+  const w=$('revealWrap');
+  w.classList.remove('out');
+  w.classList.add('on');
+}
+function showWeekReveal(text,count){
+  $('revealCard').innerHTML=`
+    <div class="reveal-role">
+      <div class="reveal-role-dot" style="background:var(--acc)"></div>
+      <div class="reveal-role-name" style="color:var(--acc)">инсайт недели</div>
+    </div>
+    <div class="reveal-text">"${esc(text)}"</div>
+    <div class="reveal-src">
+      <div style="color:var(--t3)">${count} ${plural(count,'запись','записи','записей')} за 7 дней</div>
     </div>
     <div class="reveal-hint">нажми чтобы закрыть</div>`;
   const w=$('revealWrap');
