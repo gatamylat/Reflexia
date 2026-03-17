@@ -525,13 +525,14 @@ function render(){
   // Morning block
   if(mode==='morning'){
     const yest=new Date(Date.now()-86400000).toISOString().split('T')[0];
-    const yE=entries.find(e=>e.date===yest&&e.type==='evening');
-    html+=`<div class="morning-block">
+    const yEntries=entries.filter(e=>e.date===yest).sort((a,b)=>b.createdAt-a.createdAt);
+    const yE=yEntries.find(e=>e.type==='evening')||yEntries[0];
+    html+=`<div class="morning-block"${yE&&!yE.morResp?' onclick="retryMorning()" style="cursor:pointer"':''}>
       <div class="morning-lbl">
         <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/></svg>
         утренний разгон
       </div>
-      ${yE?.morResp?`<div class="morning-text">"${esc(yE.morResp)}"</div>`:`<div class="morning-sub">${yE?'Идёт загрузка...':'Нет вечерней записи за вчера'}</div>`}
+      ${yE?.morResp?`<div class="morning-text">"${esc(yE.morResp)}"</div>`:`<div class="morning-sub">${yE?'Нажми чтобы сгенерировать':'Нет записей за вчера'}</div>`}
     </div>`;
   }
 
@@ -795,15 +796,23 @@ async function checkMorningAuto(){
   if(getMode()!=='morning')return;
   const key=appData.settings?.claudeKey;if(!key)return;
   const yest=new Date(Date.now()-86400000).toISOString().split('T')[0];
-  const yE=(appData.entries||[]).find(e=>e.date===yest&&e.type==='evening');
+  // Ищем вечернюю запись, или последнюю заметку/запись за вчера
+  const yEntries=(appData.entries||[]).filter(e=>e.date===yest).sort((a,b)=>b.createdAt-a.createdAt);
+  const yE=yEntries.find(e=>e.type==='evening')||yEntries[0];
   if(!yE||yE.morResp)return;
-  const mor=appData.settings?.morPrompt||'';if(!mor)return;
+  const mor=appData.settings?.morPrompt||'На основе вчерашней записи дай короткий утренний импульс на день — 1–2 предложения. Тёплый тон, без советов.';
   try{
     const ctx=appData.settings?.baseContext||'';
     const sys=[ctx,mor].filter(Boolean).join('\n\n');
     const r=await callClaudeSystem(sys,`Вечерняя запись от ${yE.date}, настроение ${yE.mood}/5:\n${yE.text}`,350);
     yE.morResp=r.trim();sync();render();
   }catch(e){console.log('[morning auto]',e.message);}
+}
+async function retryMorning(){
+  const key=appData.settings?.claudeKey;if(!key){toast('Нужен API ключ ⚙');return;}
+  toast('Генерирую...');
+  await checkMorningAuto();
+  if(getMode()==='morning')render();
 }
 
 // ═══ ROLE PICKER ═══
