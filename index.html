@@ -23,7 +23,7 @@ input,textarea{-webkit-user-select:auto;user-select:auto}
 :root{
   --bg:#FAF9F5;--surf:#fff;--t1:#1C1C1E;--t2:#8A8985;--t3:#C4C3BE;
   --acc:#1A7AE6;--ok:#2EBD52;--del:#E8453A;--warn:#E89A0A;
-  --eve:#4A4078;--mor:#C07800;
+  --eve:#4A4078;--mor:#C07800;--foc:#2A9D8F;
   --brd:rgba(40,35,20,.07);--brd2:rgba(40,35,20,.13);
   --sh:0 1px 5px rgba(30,25,10,.05);--sh2:0 4px 16px rgba(30,25,10,.08);
   --fn:'DM Sans',-apple-system,sans-serif;--fs:'Playfair Display',Georgia,serif;
@@ -82,6 +82,15 @@ input,textarea{-webkit-user-select:auto;user-select:auto}
 .ai-wdot{width:5px;height:5px;border-radius:50%;background:var(--acc);animation:pulse 1.4s infinite}
 .ai-week-text{font-family:var(--fs);font-style:italic;font-size:13px;color:var(--t1);line-height:1.5}
 .ai-week-empty{font-size:12px;color:var(--t3);font-style:italic}
+
+/* FOCUS BLOCK */
+.focus-block{background:var(--surf);border-radius:12px;border:0.5px solid rgba(42,157,143,.18);padding:13px 15px;margin-bottom:10px}
+.focus-lbl{display:flex;align-items:center;gap:5px;font-size:10px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:var(--foc);margin-bottom:5px}
+.focus-stat{display:flex;gap:4px;align-items:center}
+.focus-dot{width:7px;height:7px;border-radius:50%;background:rgba(42,157,143,.2);transition:background .2s}
+.focus-dot.done{background:var(--foc)}
+.focus-text{font-size:12px;color:var(--t2);line-height:1.45;margin-top:4px}
+.focus-text b{font-weight:500;color:var(--t1)}
 
 /* ENTRIES */
 .sec{font-size:11px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:var(--t3);margin-bottom:8px;margin-top:2px}
@@ -144,8 +153,8 @@ input,textarea{-webkit-user-select:auto;user-select:auto}
 .td:nth-child(3){animation:dotpulse 1.2s .4s infinite}
 
 /* ADD ENTRY */
-.type-row{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:14px}
-.type-btn{padding:10px 6px;border-radius:8px;border:1.5px solid var(--brd2);background:transparent;font-family:var(--fn);font-size:12px;font-weight:500;color:var(--t2);cursor:pointer;transition:all .15s;text-align:center}
+.type-row{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:14px}
+.type-btn{padding:10px 4px;border-radius:8px;border:1.5px solid var(--brd2);background:transparent;font-family:var(--fn);font-size:12px;font-weight:500;color:var(--t2);cursor:pointer;transition:all .15s;text-align:center}
 .type-btn.sel{color:#fff}
 .mood-pick{display:flex;justify-content:space-between;margin-bottom:14px}
 .mood-opt{width:43px;height:43px;border-radius:50%;border:1.5px solid var(--brd2);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:20px;transition:transform .2s cubic-bezier(.34,1.56,.64,1),border-color .15s}
@@ -153,6 +162,8 @@ input,textarea{-webkit-user-select:auto;user-select:auto}
 .mood-opt:active{transform:scale(.88)}
 .add-ta{width:100%;border:1.5px solid var(--brd2);border-radius:8px;padding:11px 13px;font-family:var(--fn);font-size:15px;color:var(--t1);resize:none;background:var(--bg);outline:none;line-height:1.55;transition:border-color .15s}
 .add-ta:focus{border-color:var(--acc)}
+.focus-guide{font-size:11px;color:var(--foc);line-height:1.5;margin-bottom:10px;padding:8px 10px;background:rgba(42,157,143,.06);border-radius:8px;border:0.5px solid rgba(42,157,143,.15);display:none}
+.focus-guide.on{display:block}
 
 /* SETTINGS */
 .set-field{margin-bottom:14px}
@@ -287,9 +298,13 @@ input,textarea{-webkit-user-select:auto;user-select:auto}
       <div class="sh-title">Новая запись</div>
       <div class="sh-sub">Выбери тип и напиши что хочешь</div>
       <div class="type-row">
-        <div class="type-btn sel" id="tb-morning" onclick="selType('morning',this)" style="background:var(--mor);border-color:var(--mor)">Утренняя</div>
-        <div class="type-btn" id="tb-evening" onclick="selType('evening',this)">Вечерняя</div>
+        <div class="type-btn sel" id="tb-morning" onclick="selType('morning',this)" style="background:var(--mor);border-color:var(--mor)">Утро</div>
+        <div class="type-btn" id="tb-evening" onclick="selType('evening',this)">Вечер</div>
+        <div class="type-btn" id="tb-focus" onclick="selType('focus',this)">Фокус</div>
         <div class="type-btn" id="tb-note" onclick="selType('note',this)">Заметка</div>
+      </div>
+      <div class="focus-guide" id="focusGuide">
+        🎯 Одно дело для себя — не горит, не срочное, не чужое.<br>Что выбрал/сделал и что чувствовал.
       </div>
       <div class="mood-pick" id="moodPick">
         <div class="mood-opt" onclick="selMood(this,1)">😩</div>
@@ -346,6 +361,11 @@ input,textarea{-webkit-user-select:auto;user-select:auto}
         <textarea class="set-inp" id="sMor" rows="5"></textarea>
         <div class="set-hint">Как Claude разгоняет утро на основе вчерашней вечерней записи.</div>
       </div>
+      <div class="set-field">
+        <span class="set-lbl" style="color:var(--foc)">Промпт фокуса</span>
+        <textarea class="set-inp" id="sFoc" rows="4"></textarea>
+        <div class="set-hint">Как Claude отвечает на записи типа «Фокус» — практика доверия себе.</div>
+      </div>
       <div class="set-div"></div>
       <div class="set-field">
         <span class="set-lbl" style="color:var(--eve)">Роли</span>
@@ -375,13 +395,14 @@ TinyGesture.defaults={threshold:(type,_self)=>Math.max(25,Math.floor(0.15*(type=
 const APP_NAME='reflexia-v3';
 const FB_CONFIG={apiKey:"AIzaSyAgIA0PLvUOJsRN8tHRzC03evTTkt3KHHc",authDomain:"skills-tracker-3f21b.firebaseapp.com",projectId:"skills-tracker-3f21b",storageBucket:"skills-tracker-3f21b.firebasestorage.app",messagingSenderId:"108202530564",appId:"1:108202530564:web:31ecf70071f49a89abe251"};
 
-// Дефолтные роли — промпты без личного контекста (контекст хранится отдельно в sCtx)
 const DEFAULT_ROLES=[
   {id:'kat',name:'КАТ',color:'#4A4078',prompt:'Отвечай 2–3 предложениями. Замечай паттерны в тексте — не объясняй их, просто называй. Отражай эмоцию которую человек назвал вскользь. Тон тёплый, немного парадоксальный. Без советов. Без вопросов.'},
   {id:'ling',name:'Лингвист',color:'#2EBD52',prompt:'Отвечай 1–2 предложениями. Смотри только на язык — выбор слов, метафоры, как человек называет вещи. Игнорируй смысл, работай с формой. Тон точный, нейтральный. Без советов. Без вопросов.'},
   {id:'sys',name:'Системный',color:'#1A7AE6',prompt:'Отвечай 2 предложениями. Ищи повторяющиеся паттерны, циклы, связи между разными частями текста. Называй структуру, не детали. Тон спокойный, без оценок. Без советов. Без вопросов.'},
   {id:'wit',name:'Свидетель',color:'#8A8985',prompt:'Отвечай одним предложением. Только переформулируй суть другими словами — точное зеркало. Никакой интерпретации, никаких советов, никаких вопросов. Просто отражение.'},
 ];
+
+const DEFAULT_FOCUS_PROMPT='Человек практикует доверие себе: каждый день выбирает одно дело, которое важно ему лично — не горит, не срочное, не чужое — и делает его. Затем записывает что чувствовал. Твоя задача: отразить, что произошло внутри, пока он делал своё вместо чужого пожара. Замечай разницу между «делать из тревоги» и «делать из себя». 2–3 предложения, без советов, без вопросов.';
 
 // ═══ STATE ═══
 let fbDb=null,fbAuth=null,fbOk=false,fbBusy=false;
@@ -398,6 +419,7 @@ let appData={
     baseContext:'',
     evePrompt:'',
     morPrompt:'',
+    focPrompt:'',
     roles:JSON.parse(JSON.stringify(DEFAULT_ROLES)),
     activeRole:'kat'
   }
@@ -417,9 +439,9 @@ function fmtDate(iso){const d=new Date(iso+'T12:00:00'),t=todayISO(),y=new Date(
 function fmtTime(ts){const d=new Date(ts);return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');}
 function moodColor(m){return['','var(--del)','var(--warn)','var(--warn)','var(--ok)','var(--acc)'][m]||'var(--t3)'}
 function moodPct(m){return[0,18,38,60,76,94][m]||0}
-function typeLabel(t){return{morning:'утро',evening:'вечер',note:'заметка'}[t]||t}
-function typeColor(t){return{morning:'var(--mor)',evening:'var(--eve)',note:'var(--t2)'}[t]||'var(--t2)'}
-function typeBg(t){return{morning:'rgba(192,120,0,.08)',evening:'rgba(74,64,120,.08)',note:'rgba(40,35,20,.05)'}[t]||'rgba(40,35,20,.05)'}
+function typeLabel(t){return{morning:'утро',evening:'вечер',focus:'фокус',note:'заметка'}[t]||t}
+function typeColor(t){return{morning:'var(--mor)',evening:'var(--eve)',focus:'var(--foc)',note:'var(--t2)'}[t]||'var(--t2)'}
+function typeBg(t){return{morning:'rgba(192,120,0,.08)',evening:'rgba(74,64,120,.08)',focus:'rgba(42,157,143,.08)',note:'rgba(40,35,20,.05)'}[t]||'rgba(40,35,20,.05)'}
 function getActiveRole(){const r=appData.settings?.roles||DEFAULT_ROLES;return r.find(x=>x.id===(appData.settings?.activeRole||'kat'))||r[0]||DEFAULT_ROLES[0];}
 function plural(n,a,b,c){const m=n%10,h=n%100;if(m===1&&h!==11)return a;if(m>=2&&m<=4&&(h<10||h>=20))return b;return c;}
 
@@ -479,7 +501,6 @@ document.addEventListener('DOMContentLoaded',()=>{
   const last=localStorage.getItem(APP_NAME+'_last');
   if(last)$('inName').value=last;
   $('inName').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
-  // Auto-select type based on time
   const m=getMode();
   selType(m,document.getElementById('tb-'+m));
 });
@@ -488,18 +509,15 @@ document.addEventListener('DOMContentLoaded',()=>{
 function updateHeader(){
   const d=new Date();
   $('hDate').textContent=WD[d.getDay()]+', '+d.getDate()+' '+MO[d.getMonth()];
-  // FAB color by mode
   const mode=getMode();
   const fab=$('fabMain');
   if(mode==='morning'){fab.style.background='var(--mor)';fab.style.boxShadow='0 3px 12px rgba(192,120,0,.25)';}
   else{fab.style.background='var(--acc)';fab.style.boxShadow='0 3px 12px rgba(26,122,230,.25)';}
-  // Role pill
   const role=getActiveRole();
   const pill=$('rolePill');
   pill.innerHTML=`<div class="role-pill-dot" style="background:${role.color}"></div><span style="color:${role.color}">${role.name}</span>`;
   pill.style.background=role.color+'18';
   pill.style.borderColor=role.color+'30';
-  // Top badge = entries count
   const totalEntries=appData.entries?.length||0;
   $('statStreak').textContent=calcStreak();
   $('statTotal').textContent=totalEntries;
@@ -512,6 +530,28 @@ function calcStreak(){
   const sorted=[...e].sort((a,b)=>b.date.localeCompare(a.date));
   let s=0,cur=new Date();cur.setHours(0,0,0,0);
   for(const x of sorted){const d=new Date(x.date+'T00:00:00'),diff=Math.round((cur-d)/86400000);if(diff===0||diff===1){s++;cur=d;}else break;}
+  return s;
+}
+
+// ═══ FOCUS STATS ═══
+function getFocusStats(){
+  const entries=appData.entries||[];
+  const today=todayISO();
+  const todayFocus=entries.filter(e=>e.type==='focus'&&e.date===today);
+  // Last 7 days
+  const days=[];
+  for(let i=6;i>=0;i--){
+    const d=new Date(Date.now()-i*86400000).toISOString().split('T')[0];
+    days.push({date:d,done:entries.some(e=>e.type==='focus'&&e.date===d)});
+  }
+  const streak=calcFocusStreak(entries);
+  return{todayDone:todayFocus.length>0,days,streak,total:entries.filter(e=>e.type==='focus').length};
+}
+function calcFocusStreak(entries){
+  const focusDates=[...new Set(entries.filter(e=>e.type==='focus').map(e=>e.date))].sort().reverse();
+  if(!focusDates.length)return 0;
+  let s=0,cur=new Date();cur.setHours(0,0,0,0);
+  for(const ds of focusDates){const d=new Date(ds+'T00:00:00'),diff=Math.round((cur-d)/86400000);if(diff===0||diff===1){s++;cur=d;}else break;}
   return s;
 }
 
@@ -536,6 +576,19 @@ function render(){
       ${yE?.morResp?`<div class="morning-text">"${esc(yE.morResp)}"</div>`:`<div class="morning-sub">${yE?'Нажми чтобы сгенерировать':'Нет записей за вчера'}</div>`}
     </div>`;
   }
+
+  // Focus tracker block
+  const fs=getFocusStats();
+  html+=`<div class="focus-block"${!fs.todayDone?' onclick="openAddFocus()" style="cursor:pointer"':''}>
+    <div class="focus-lbl">
+      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+      фокус · доверие себе
+    </div>
+    <div class="focus-stat">${fs.days.map(d=>`<div class="focus-dot${d.done?' done':''}"></div>`).join('')}<span style="font-size:10px;color:var(--t3);margin-left:4px">${fs.streak>0?fs.streak+'д':'—'}</span></div>
+    <div class="focus-text">${fs.todayDone
+      ?'<b>Сегодня ✓</b> — фокус записан'
+      :'<b>Сегодня</b> — выбери одно дело для себя'}</div>
+  </div>`;
 
   // Week insight
   const wh=getWeekHash();
@@ -625,21 +678,27 @@ function openEntry(id){
   const e=(appData.entries||[]).find(x=>x.id===id);if(!e)return;
   const role=appData.settings?.roles?.find(r=>r.id===e.role)||null;
   const moods=['','😩','😕','😐','🙂','😌'];
+  const isFocus=e.type==='focus';
   let respBlock='';
   if(e.response){
-    respBlock=`<div class="sh-sec" style="border-color:${(role?.color||'#4A4078')}30;background:${(role?.color||'#4A4078')}08">
+    respBlock=`<div class="sh-sec" style="border-color:${isFocus?'rgba(42,157,143,.25)':(role?.color||'#4A4078')+'30'};background:${isFocus?'rgba(42,157,143,.06)':(role?.color||'#4A4078')+'08'}">
       <div class="ai-ans-hdr">
-        <div class="sh-slbl" style="color:${role?.color||'var(--eve)'};margin:0">ответ</div>
-        ${role?`<div class="role-tag" style="background:${role.color}15;color:${role.color}">${role.name}</div>`:''}
+        <div class="sh-slbl" style="color:${isFocus?'var(--foc)':role?.color||'var(--eve)'};margin:0">ответ</div>
+        ${!isFocus&&role?`<div class="role-tag" style="background:${role.color}15;color:${role.color}">${role.name}</div>`:''}
+        ${isFocus?`<div class="role-tag" style="background:rgba(42,157,143,.12);color:var(--foc)">фокус</div>`:''}
       </div>
       <div class="ai-answer">"${esc(e.response)}"</div>
     </div>`;
   }else{
-    respBlock=`<div class="sh-sec" style="border-color:rgba(74,64,120,.12)">
-      <div class="sh-slbl" style="color:var(--eve)">ответ Claude</div>
-      <div class="sh-stext" style="color:var(--t3);font-style:italic">Ещё не запрошен.</div>
+    respBlock=`<div class="sh-sec" style="border-color:${isFocus?'rgba(42,157,143,.15)':'rgba(74,64,120,.12)'}">
+      <div class="sh-slbl" style="color:${isFocus?'var(--foc)':'var(--eve)'}">ответ Claude</div>
+      <div class="sh-stext" style="color:var(--t3);font-style:italic">${isFocus?'Нажми кнопку ниже.':'Ещё не запрошен.'}</div>
     </div>`;
   }
+  const btnColor=isFocus?'var(--foc)':getActiveRole().color;
+  const btnLabel=isFocus
+    ?(e.response?'Переспросить':'Спросить Claude')
+    :(e.response?'Переспросить':'Спросить Claude');
   $('shEntryBody').innerHTML=`
     <div class="sh-title">${fmtDate(e.date)}${e.createdAt?' · '+fmtTime(e.createdAt):''}</div>
     <div class="sh-sub">${typeLabel(e.type)} · настроение ${moods[e.mood]} ${e.mood}/5</div>
@@ -648,7 +707,7 @@ function openEntry(id){
     <div class="sh-btns">
       <button class="btn-g" onclick="closeSheet()">Закрыть</button>
       ${e.type!=='morning'
-        ?`<button class="btn-p" id="askBtn" style="background:${getActiveRole().color}" onclick="askClaude('${id}',this)">${e.response?'Переспросить':'Спросить Claude'}</button>`
+        ?`<button class="btn-p" id="askBtn" style="background:${btnColor}" onclick="askClaude('${id}',this)">${btnLabel}</button>`
         :''}
     </div>
     <div style="height:6px"></div>
@@ -667,9 +726,16 @@ function openAdd(){
   selMoodVal=4;
   $('addText').value='';
   document.querySelectorAll('.mood-opt').forEach((o,i)=>o.classList.toggle('sel',i===3));
-  // Auto-select type by time
   const m=getMode();
   selType(m,document.getElementById('tb-'+m));
+  openSheet('shAdd');
+  setTimeout(()=>$('addText').focus(),380);
+}
+function openAddFocus(){
+  selMoodVal=4;
+  $('addText').value='';
+  document.querySelectorAll('.mood-opt').forEach((o,i)=>o.classList.toggle('sel',i===3));
+  selType('focus',document.getElementById('tb-focus'));
   openSheet('shAdd');
   setTimeout(()=>$('addText').focus(),380);
 }
@@ -677,8 +743,18 @@ function selType(type,el){
   addType=type;
   document.querySelectorAll('.type-btn').forEach(b=>{b.classList.remove('sel');b.style.background='transparent';b.style.borderColor='';b.style.color='';});
   el.classList.add('sel');
-  const c=type==='morning'?'var(--mor)':type==='evening'?'var(--eve)':'var(--t2)';
+  const c=type==='morning'?'var(--mor)':type==='evening'?'var(--eve)':type==='focus'?'var(--foc)':'var(--t2)';
   el.style.background=c;el.style.borderColor=c;el.style.color='#fff';
+  // Focus guide & placeholder
+  const guide=$('focusGuide');
+  const ta=$('addText');
+  if(guide)guide.classList.toggle('on',type==='focus');
+  if(ta){
+    if(type==='focus')ta.placeholder='Что выбрал для себя сегодня? Как себя чувствовал пока делал это?';
+    else if(type==='morning')ta.placeholder='Как начинается день?';
+    else if(type==='evening')ta.placeholder='Как прошёл день?';
+    else ta.placeholder='Что сейчас?';
+  }
 }
 function selMood(el,v){
   selMoodVal=v;
@@ -724,7 +800,7 @@ async function genWeek(btn){
   const ctx=appData.settings?.baseContext||'';
   const sys=ctx?ctx+'\n\n':'';
   try{
-    const r=await callClaude(sys+'Записи дневника за неделю:\n'+lines+'\n\nНапиши 2–3 предложения — инсайт о паттерне недели. Без перечисления фактов — найди связь. Только текст.',400);
+    const r=await callClaude(sys+'Записи дневника за неделю:\n'+lines+'\n\nНапиши 2–3 предложения — инсайт о паттерне недели. Без перечисления фактов — найди связь. Обрати внимание на записи типа «фокус» — это практика доверия себе. Только текст.',400);
     appData.weekInsight={text:r.trim(),weekHash:getWeekHash(),generatedAt:Date.now()};
     sync();closeSheet();showWeekReveal(appData.weekInsight.text,recent.length);
   }catch(e){toast('Ошибка: '+e.message);btn.disabled=false;btn.textContent='Попробовать снова';}
@@ -737,13 +813,26 @@ async function askClaude(id,btn){
   btn.disabled=true;btn.innerHTML='<span class="spin"></span>';
   const role=getActiveRole();
   const ctx=appData.settings?.baseContext||'';
-  const eve=appData.settings?.evePrompt||'';
-  const sys=[ctx,eve,role.prompt].filter(Boolean).join('\n\n');
+  const isFocus=e.type==='focus';
+  let sys;
+  if(isFocus){
+    const focPrompt=appData.settings?.focPrompt||DEFAULT_FOCUS_PROMPT;
+    sys=[ctx,focPrompt].filter(Boolean).join('\n\n');
+  }else{
+    const eve=appData.settings?.evePrompt||'';
+    sys=[ctx,eve,role.prompt].filter(Boolean).join('\n\n');
+  }
   const userMsg=`${typeLabel(e.type)}, ${e.date}, настроение ${e.mood}/5:\n${e.text}`;
   try{
     const r=await callClaudeSystem(sys,userMsg,350);
-    e.response=r.trim();e.role=role.id;
-    sync();closeSheet();showReveal(e,role);
+    e.response=r.trim();
+    e.role=isFocus?'focus':role.id;
+    sync();closeSheet();
+    if(isFocus){
+      showReveal(e,{name:'фокус',color:'#2A9D8F'});
+    }else{
+      showReveal(e,role);
+    }
   }catch(err){toast('Ошибка: '+err.message);btn.disabled=false;btn.textContent='Попробовать снова';}
 }
 
@@ -797,7 +886,6 @@ async function checkMorningAuto(){
   if(getMode()!=='morning')return;
   const key=appData.settings?.claudeKey;if(!key)return;
   const yest=new Date(Date.now()-86400000).toISOString().split('T')[0];
-  // Ищем вечернюю запись, или последнюю заметку/запись за вчера
   const yEntries=(appData.entries||[]).filter(e=>e.date===yest).sort((a,b)=>b.createdAt-a.createdAt);
   const yE=yEntries.find(e=>e.type==='evening')||yEntries[0];
   if(!yE||yE.morResp)return;
@@ -838,6 +926,7 @@ function openSettings(){
   $('sCtx').value=appData.settings?.baseContext||'';
   $('sEve').value=appData.settings?.evePrompt||'';
   $('sMor').value=appData.settings?.morPrompt||'';
+  $('sFoc').value=appData.settings?.focPrompt||DEFAULT_FOCUS_PROMPT;
   renderRolesList();
   openSheet('shSettings');
 }
@@ -856,6 +945,7 @@ function saveSettings(){
   appData.settings.baseContext=$('sCtx').value.trim();
   appData.settings.evePrompt=$('sEve').value.trim();
   appData.settings.morPrompt=$('sMor').value.trim();
+  appData.settings.focPrompt=$('sFoc').value.trim();
   sync();closeSheet();toast('Настройки сохранены');
 }
 
