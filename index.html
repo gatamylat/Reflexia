@@ -23,7 +23,7 @@ input,textarea{-webkit-user-select:auto;user-select:auto}
 :root{
   --bg:#FAF9F5;--surf:#fff;--t1:#1C1C1E;--t2:#8A8985;--t3:#C4C3BE;
   --acc:#1A7AE6;--ok:#2EBD52;--del:#E8453A;--warn:#E89A0A;
-  --eve:#4A4078;--mor:#C07800;--foc:#2A9D8F;
+  --eve:#4A4078;--mor:#C07800;--foc:#2A9D8F;--sup:#C75D8A;
   --brd:rgba(40,35,20,.07);--brd2:rgba(40,35,20,.13);
   --sh:0 1px 5px rgba(30,25,10,.05);--sh2:0 4px 16px rgba(30,25,10,.08);
   --fn:'DM Sans',-apple-system,sans-serif;--fs:'Playfair Display',Georgia,serif;
@@ -92,6 +92,37 @@ input,textarea{-webkit-user-select:auto;user-select:auto}
 .focus-text{font-size:12px;color:var(--t2);line-height:1.45;margin-top:4px}
 .focus-text b{font-weight:500;color:var(--t1)}
 
+/* SUPPORT BLOCK */
+.sup-block{background:var(--surf);border-radius:12px;border:0.5px solid rgba(199,93,138,.18);padding:13px 15px;margin-bottom:10px;cursor:pointer;transition:transform .2s cubic-bezier(.22,1,.36,1)}
+.sup-block:active{transform:scale(.985)}
+.sup-lbl{display:flex;align-items:center;gap:5px;font-size:10px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:var(--sup);margin-bottom:5px}
+.sup-text{font-family:var(--fs);font-style:italic;font-size:13px;color:var(--t1);line-height:1.5}
+.sup-empty{font-size:12px;color:var(--t3);font-style:italic}
+.sup-counter{font-size:10px;color:var(--t3);margin-top:4px}
+
+/* ABC FIELDS */
+.abc-fields{display:flex;flex-direction:column;gap:8px;margin-bottom:10px}
+.abc-field{position:relative}
+.abc-label{position:absolute;left:10px;top:8px;font-size:9px;font-weight:600;letter-spacing:.4px;text-transform:uppercase;color:var(--sup);pointer-events:none;z-index:1}
+.abc-ta{width:100%;border:1.5px solid var(--brd2);border-radius:8px;padding:24px 11px 9px;font-family:var(--fn);font-size:14px;color:var(--t1);resize:none;background:var(--bg);outline:none;line-height:1.5;transition:border-color .15s}
+.abc-ta:focus{border-color:var(--sup)}
+
+/* GUIDE BOXES */
+.guide-box{font-size:11px;color:var(--t2);line-height:1.5;padding:8px 10px;border-radius:8px;border:0.5px solid;margin-bottom:10px;display:none}
+.guide-box.on{display:block}
+.guide-box b{font-weight:500;color:var(--t1)}
+
+/* SUP PHRASE ITEMS */
+.phrase-item{display:flex;align-items:center;gap:8px;padding:8px 10px;background:var(--bg);border-radius:8px;border:0.5px solid var(--brd2);margin-bottom:6px}
+.phrase-item-text{flex:1;font-size:13px;color:var(--t1);line-height:1.4}
+.phrase-item-del{width:24px;height:24px;border-radius:50%;border:none;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.phrase-item-del:active{background:rgba(232,69,58,.08)}
+.phrase-item-del svg{width:14px;height:14px;stroke:var(--del);stroke-width:2;fill:none;stroke-linecap:round}
+.add-phrase-row{display:flex;gap:6px;margin-top:6px}
+.add-phrase-inp{flex:1;border:1.5px solid var(--brd2);border-radius:8px;padding:8px 10px;font-family:var(--fn);font-size:13px;color:var(--t1);background:var(--bg);outline:none}
+.add-phrase-inp:focus{border-color:var(--sup)}
+.add-phrase-btn{padding:8px 14px;border-radius:8px;border:none;background:var(--sup);color:#fff;font-family:var(--fn);font-size:12px;font-weight:500;cursor:pointer}
+
 /* ENTRIES */
 .sec{font-size:11px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:var(--t3);margin-bottom:8px;margin-top:2px}
 .stack{position:relative;height:280px;margin-bottom:8px}
@@ -153,8 +184,8 @@ input,textarea{-webkit-user-select:auto;user-select:auto}
 .td:nth-child(3){animation:dotpulse 1.2s .4s infinite}
 
 /* ADD ENTRY */
-.type-row{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:14px}
-.type-btn{padding:10px 4px;border-radius:8px;border:1.5px solid var(--brd2);background:transparent;font-family:var(--fn);font-size:12px;font-weight:500;color:var(--t2);cursor:pointer;transition:all .15s;text-align:center}
+.type-row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.type-btn{flex:1;min-width:calc(33% - 6px);padding:10px 4px;border-radius:8px;border:1.5px solid var(--brd2);background:transparent;font-family:var(--fn);font-size:12px;font-weight:500;color:var(--t2);cursor:pointer;transition:all .15s;text-align:center}
 .type-btn.sel{color:#fff}
 .mood-pick{display:flex;justify-content:space-between;margin-bottom:14px}
 .mood-opt{width:43px;height:43px;border-radius:50%;border:1.5px solid var(--brd2);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:20px;transition:transform .2s cubic-bezier(.34,1.56,.64,1),border-color .15s}
@@ -302,9 +333,19 @@ input,textarea{-webkit-user-select:auto;user-select:auto}
         <div class="type-btn" id="tb-evening" onclick="selType('evening',this)">Вечер</div>
         <div class="type-btn" id="tb-focus" onclick="selType('focus',this)">Фокус</div>
         <div class="type-btn" id="tb-note" onclick="selType('note',this)">Заметка</div>
+        <div class="type-btn" id="tb-abc" onclick="selType('abc',this)">АВС</div>
       </div>
       <div class="focus-guide" id="focusGuide">
         🎯 Одно дело для себя — не горит, не срочное, не чужое.<br>Что выбрал/сделал и что чувствовал.
+      </div>
+      <div class="guide-box" id="abcGuide" style="color:var(--sup);border-color:rgba(199,93,138,.2);background:rgba(199,93,138,.04)">
+        <b>АВС-анализ по Литваку</b><br>
+        А — ситуация, что произошло<br>
+        С — твоя реакция, эмоции, поведение<br>
+        В — какой механизм/установка сработала<br>
+        С1 — как хотел бы отреагировать<br>
+        В1 — как нужно воспринимать ситуацию для С1<br>
+        <span style="color:var(--t3);font-size:10px">Анализ (В, С1, В1) лучше делать через 3 дня</span>
       </div>
       <div class="mood-pick" id="moodPick">
         <div class="mood-opt" onclick="selMood(this,1)">😩</div>
@@ -314,6 +355,13 @@ input,textarea{-webkit-user-select:auto;user-select:auto}
         <div class="mood-opt" onclick="selMood(this,5)">😌</div>
       </div>
       <textarea class="add-ta" id="addText" rows="5" placeholder="Что сейчас?"></textarea>
+      <div class="abc-fields" id="abcFields" style="display:none">
+        <div class="abc-field"><div class="abc-label">А · ситуация</div><textarea class="abc-ta" id="abcA" rows="2" placeholder="Что произошло?"></textarea></div>
+        <div class="abc-field"><div class="abc-label">С · реакция</div><textarea class="abc-ta" id="abcC" rows="2" placeholder="Как отреагировал, что чувствовал?"></textarea></div>
+        <div class="abc-field"><div class="abc-label">В · механизм</div><textarea class="abc-ta" id="abcB" rows="2" placeholder="Какая установка сработала? (можно заполнить через 3 дня)"></textarea></div>
+        <div class="abc-field"><div class="abc-label">С1 · хотел бы</div><textarea class="abc-ta" id="abcC1" rows="2" placeholder="Как хотел бы отреагировать?"></textarea></div>
+        <div class="abc-field"><div class="abc-label">В1 · новое восприятие</div><textarea class="abc-ta" id="abcB1" rows="2" placeholder="Как нужно воспринимать ситуацию для С1?"></textarea></div>
+      </div>
       <div class="sh-btns">
         <button class="btn-g" onclick="closeSheet()">Отмена</button>
         <button class="btn-p" id="saveBtn" onclick="saveEntry()">Сохранить</button>
@@ -366,6 +414,11 @@ input,textarea{-webkit-user-select:auto;user-select:auto}
         <textarea class="set-inp" id="sFoc" rows="4"></textarea>
         <div class="set-hint">Как Claude отвечает на записи типа «Фокус» — практика доверия себе.</div>
       </div>
+      <div class="set-field">
+        <span class="set-lbl" style="color:var(--sup)">Промпт АВС</span>
+        <textarea class="set-inp" id="sAbc" rows="4"></textarea>
+        <div class="set-hint">Как Claude анализирует АВС-записи по методике Литвака.</div>
+      </div>
       <div class="set-div"></div>
       <div class="set-field">
         <span class="set-lbl" style="color:var(--eve)">Роли</span>
@@ -382,6 +435,38 @@ input,textarea{-webkit-user-select:auto;user-select:auto}
 
   <!-- SHEET: edit role -->
   <div class="sheet" id="shRole2"><div class="sh-bar"></div><div class="sh-body" id="shRole2Body"></div></div>
+
+  <!-- SHEET: support phrases -->
+  <div class="sheet" id="shSupport">
+    <div class="sh-bar"></div>
+    <div class="sh-body">
+      <div class="sh-title">Поддержка</div>
+      <div class="sh-sub">Фразы из «Оды себе» и «Разрешений» — по Литваку</div>
+      <div class="guide-box on" style="color:var(--sup);border-color:rgba(199,93,138,.2);background:rgba(199,93,138,.04);margin-bottom:14px">
+        <b>Ода себе:</b> пиши про себя только хорошее — успехи, качества, достижения. Перечитывай каждый день.<br>
+        <b>Разрешения:</b> «Я разрешаю себе...» и «Я имею полное право...» — особенно там, где есть дефицит.
+      </div>
+      <div class="set-field">
+        <span class="set-lbl" style="color:var(--sup)">Ода себе</span>
+        <div id="odaList"></div>
+        <div class="add-phrase-row">
+          <input class="add-phrase-inp" id="odaInp" placeholder="Я молодец потому что...">
+          <button class="add-phrase-btn" onclick="addPhrase('oda')">+</button>
+        </div>
+      </div>
+      <div class="set-field" style="margin-top:14px">
+        <span class="set-lbl" style="color:var(--sup)">Разрешения и права</span>
+        <div id="permList"></div>
+        <div class="add-phrase-row">
+          <input class="add-phrase-inp" id="permInp" placeholder="Я разрешаю себе... / Я имею право...">
+          <button class="add-phrase-btn" onclick="addPhrase('perm')">+</button>
+        </div>
+      </div>
+      <div class="sh-btns" style="margin-top:14px">
+        <button class="btn-g" style="width:100%" onclick="closeSheet()">Закрыть</button>
+      </div>
+    </div>
+  </div>
 
 </div>
 
@@ -404,6 +489,8 @@ const DEFAULT_ROLES=[
 
 const DEFAULT_FOCUS_PROMPT='Человек практикует доверие себе: каждый день выбирает одно дело, которое важно ему лично — не горит, не срочное, не чужое — и делает его. Затем записывает что чувствовал. Твоя задача: отразить, что произошло внутри, пока он делал своё вместо чужого пожара. Замечай разницу между «делать из тревоги» и «делать из себя». 2–3 предложения, без советов, без вопросов.';
 
+const DEFAULT_ABC_PROMPT='Человек сделал АВС-анализ ситуации по методике Литвака (из книги «7 шагов к стабильной самооценке»). А — ситуация, В — механизм/установка, С — реакция, С1 — желаемая реакция, В1 — новое восприятие. Твоя задача: помочь увидеть паттерн — какая установка сработала (катастрофизация, недоверие себе, перфекционизм, страх оценки и т.д.). Если поля В, С1, В1 пустые — не додумывай за человека, просто отрази что видишь в А и С. 2–3 предложения, тон спокойный, без советов.';
+
 // ═══ STATE ═══
 let fbDb=null,fbAuth=null,fbOk=false,fbBusy=false;
 let userName='',userId='',lsKey='';
@@ -414,12 +501,14 @@ let editingRoleId=null;
 let appData={
   entries:[],
   weekInsight:{text:'',weekHash:'',generatedAt:0},
+  support:{oda:[],perm:[]},
   settings:{
     claudeKey:'',
     baseContext:'',
     evePrompt:'',
     morPrompt:'',
     focPrompt:'',
+    abcPrompt:'',
     roles:JSON.parse(JSON.stringify(DEFAULT_ROLES)),
     activeRole:'kat'
   }
@@ -439,9 +528,9 @@ function fmtDate(iso){const d=new Date(iso+'T12:00:00'),t=todayISO(),y=new Date(
 function fmtTime(ts){const d=new Date(ts);return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');}
 function moodColor(m){return['','var(--del)','var(--warn)','var(--warn)','var(--ok)','var(--acc)'][m]||'var(--t3)'}
 function moodPct(m){return[0,18,38,60,76,94][m]||0}
-function typeLabel(t){return{morning:'утро',evening:'вечер',focus:'фокус',note:'заметка'}[t]||t}
-function typeColor(t){return{morning:'var(--mor)',evening:'var(--eve)',focus:'var(--foc)',note:'var(--t2)'}[t]||'var(--t2)'}
-function typeBg(t){return{morning:'rgba(192,120,0,.08)',evening:'rgba(74,64,120,.08)',focus:'rgba(42,157,143,.08)',note:'rgba(40,35,20,.05)'}[t]||'rgba(40,35,20,.05)'}
+function typeLabel(t){return{morning:'утро',evening:'вечер',focus:'фокус',abc:'АВС',note:'заметка'}[t]||t}
+function typeColor(t){return{morning:'var(--mor)',evening:'var(--eve)',focus:'var(--foc)',abc:'var(--sup)',note:'var(--t2)'}[t]||'var(--t2)'}
+function typeBg(t){return{morning:'rgba(192,120,0,.08)',evening:'rgba(74,64,120,.08)',focus:'rgba(42,157,143,.08)',abc:'rgba(199,93,138,.08)',note:'rgba(40,35,20,.05)'}[t]||'rgba(40,35,20,.05)'}
 function getActiveRole(){const r=appData.settings?.roles||DEFAULT_ROLES;return r.find(x=>x.id===(appData.settings?.activeRole||'kat'))||r[0]||DEFAULT_ROLES[0];}
 function plural(n,a,b,c){const m=n%10,h=n%100;if(m===1&&h!==11)return a;if(m>=2&&m<=4&&(h<10||h>=20))return b;return c;}
 
@@ -590,6 +679,20 @@ function render(){
       :'<b>Сегодня</b> — выбери одно дело для себя'}</div>
   </div>`;
 
+  // Support block
+  const sup=appData.support||{oda:[],perm:[]};
+  const allPhrases=[...sup.oda,...sup.perm];
+  const randomPhrase=allPhrases.length?allPhrases[Math.floor(Date.now()/60000)%allPhrases.length]:'';
+  html+=`<div class="sup-block" onclick="openSupport()">
+    <div class="sup-lbl">
+      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+      поддержка
+    </div>
+    ${randomPhrase
+      ?`<div class="sup-text">"${esc(randomPhrase)}"</div><div class="sup-counter">${allPhrases.length} ${plural(allPhrases.length,'фраза','фразы','фраз')} · нажми чтобы открыть</div>`
+      :`<div class="sup-empty">Нажми чтобы добавить фразы поддержки</div>`}
+  </div>`;
+
   // Week insight
   const wh=getWeekHash();
   html+=`<div class="ai-week" onclick="openWeekInsight()">
@@ -669,7 +772,7 @@ function initStackGesture(entries){
 }
 
 // ═══ SHEETS ═══
-const ALL_SHEETS=['shEntry','shAdd','shWeek','shRole','shSettings','shRole2'];
+const ALL_SHEETS=['shEntry','shAdd','shWeek','shRole','shSettings','shRole2','shSupport'];
 function openSheet(id){$('ov').classList.add('on');ALL_SHEETS.forEach(s=>$(s).classList.remove('on'));$(id).classList.add('on');}
 function closeSheet(){$('ov').classList.remove('on');ALL_SHEETS.forEach(s=>$(s).classList.remove('on'));}
 
@@ -678,37 +781,41 @@ function openEntry(id){
   const e=(appData.entries||[]).find(x=>x.id===id);if(!e)return;
   const role=appData.settings?.roles?.find(r=>r.id===e.role)||null;
   const moods=['','😩','😕','😐','🙂','😌'];
-  const isFocus=e.type==='focus';
+  const isFocus=e.type==='focus',isAbc=e.type==='abc';
+  let entryContent='';
+  if(isAbc&&e.abc){
+    const fields=[{k:'А · ситуация',v:e.abc.a},{k:'С · реакция',v:e.abc.c},{k:'В · механизм',v:e.abc.b},{k:'С1 · хотел бы',v:e.abc.c1},{k:'В1 · восприятие',v:e.abc.b1}];
+    entryContent=`<div class="sh-sec"><div class="sh-slbl" style="color:var(--sup)">АВС-анализ</div>${fields.map(f=>`<div style="margin-bottom:6px"><span style="font-size:10px;font-weight:600;letter-spacing:.3px;text-transform:uppercase;color:var(--sup)">${f.k}</span><div style="font-size:13px;color:${f.v?'var(--t1)':'var(--t3)'};line-height:1.5;margin-top:2px">${f.v?esc(f.v):'<i>не заполнено</i>'}</div></div>`).join('')}</div>`;
+  }else{
+    entryContent=`<div class="sh-sec"><div class="sh-slbl">запись</div><div class="sh-stext">${esc(e.text)}</div></div>`;
+  }
+  const respColor=isAbc?'var(--sup)':isFocus?'var(--foc)':role?.color||'var(--eve)';
   let respBlock='';
   if(e.response){
-    respBlock=`<div class="sh-sec" style="border-color:${isFocus?'rgba(42,157,143,.25)':(role?.color||'#4A4078')+'30'};background:${isFocus?'rgba(42,157,143,.06)':(role?.color||'#4A4078')+'08'}">
+    respBlock=`<div class="sh-sec" style="border-color:${respColor}30;background:${respColor}08">
       <div class="ai-ans-hdr">
-        <div class="sh-slbl" style="color:${isFocus?'var(--foc)':role?.color||'var(--eve)'};margin:0">ответ</div>
-        ${!isFocus&&role?`<div class="role-tag" style="background:${role.color}15;color:${role.color}">${role.name}</div>`:''}
-        ${isFocus?`<div class="role-tag" style="background:rgba(42,157,143,.12);color:var(--foc)">фокус</div>`:''}
+        <div class="sh-slbl" style="color:${respColor};margin:0">ответ</div>
+        ${isAbc?'<div class="role-tag" style="background:rgba(199,93,138,.12);color:var(--sup)">АВС</div>':''}
+        ${isFocus?'<div class="role-tag" style="background:rgba(42,157,143,.12);color:var(--foc)">фокус</div>':''}
+        ${!isAbc&&!isFocus&&role?`<div class="role-tag" style="background:${role.color}15;color:${role.color}">${role.name}</div>`:''}
       </div>
       <div class="ai-answer">"${esc(e.response)}"</div>
     </div>`;
   }else{
-    respBlock=`<div class="sh-sec" style="border-color:${isFocus?'rgba(42,157,143,.15)':'rgba(74,64,120,.12)'}">
-      <div class="sh-slbl" style="color:${isFocus?'var(--foc)':'var(--eve)'}">ответ Claude</div>
-      <div class="sh-stext" style="color:var(--t3);font-style:italic">${isFocus?'Нажми кнопку ниже.':'Ещё не запрошен.'}</div>
+    respBlock=`<div class="sh-sec" style="border-color:${respColor}20">
+      <div class="sh-slbl" style="color:${respColor}">ответ Claude</div>
+      <div class="sh-stext" style="color:var(--t3);font-style:italic">Ещё не запрошен.</div>
     </div>`;
   }
-  const btnColor=isFocus?'var(--foc)':getActiveRole().color;
-  const btnLabel=isFocus
-    ?(e.response?'Переспросить':'Спросить Claude')
-    :(e.response?'Переспросить':'Спросить Claude');
+  const btnColor=isAbc?'var(--sup)':isFocus?'var(--foc)':getActiveRole().color;
   $('shEntryBody').innerHTML=`
     <div class="sh-title">${fmtDate(e.date)}${e.createdAt?' · '+fmtTime(e.createdAt):''}</div>
     <div class="sh-sub">${typeLabel(e.type)} · настроение ${moods[e.mood]} ${e.mood}/5</div>
-    <div class="sh-sec"><div class="sh-slbl">запись</div><div class="sh-stext">${esc(e.text)}</div></div>
+    ${entryContent}
     ${e.type!=='morning'?respBlock:''}
     <div class="sh-btns">
       <button class="btn-g" onclick="closeSheet()">Закрыть</button>
-      ${e.type!=='morning'
-        ?`<button class="btn-p" id="askBtn" style="background:${btnColor}" onclick="askClaude('${id}',this)">${btnLabel}</button>`
-        :''}
+      ${e.type!=='morning'?`<button class="btn-p" id="askBtn" style="background:${btnColor}" onclick="askClaude('${id}',this)">${e.response?'Переспросить':'Спросить Claude'}</button>`:''}
     </div>
     <div style="height:6px"></div>
     <div class="sh-btns"><button class="btn-g btn-del" onclick="delEntry('${id}')">Удалить запись</button></div>`;
@@ -725,11 +832,12 @@ function delEntry(id){
 function openAdd(){
   selMoodVal=4;
   $('addText').value='';
+  ['abcA','abcB','abcC','abcC1','abcB1'].forEach(id=>{if($(id))$(id).value='';});
   document.querySelectorAll('.mood-opt').forEach((o,i)=>o.classList.toggle('sel',i===3));
   const m=getMode();
   selType(m,document.getElementById('tb-'+m));
   openSheet('shAdd');
-  setTimeout(()=>$('addText').focus(),380);
+  setTimeout(()=>{if(addType==='abc')$('abcA').focus();else $('addText').focus();},380);
 }
 function openAddFocus(){
   selMoodVal=4;
@@ -743,17 +851,23 @@ function selType(type,el){
   addType=type;
   document.querySelectorAll('.type-btn').forEach(b=>{b.classList.remove('sel');b.style.background='transparent';b.style.borderColor='';b.style.color='';});
   el.classList.add('sel');
-  const c=type==='morning'?'var(--mor)':type==='evening'?'var(--eve)':type==='focus'?'var(--foc)':'var(--t2)';
+  const c=type==='morning'?'var(--mor)':type==='evening'?'var(--eve)':type==='focus'?'var(--foc)':type==='abc'?'var(--sup)':'var(--t2)';
   el.style.background=c;el.style.borderColor=c;el.style.color='#fff';
-  // Focus guide & placeholder
+  // Focus guide
   const guide=$('focusGuide');
-  const ta=$('addText');
   if(guide)guide.classList.toggle('on',type==='focus');
+  // ABC guide + fields
+  const abcGuide=$('abcGuide');
+  const abcFields=$('abcFields');
+  const ta=$('addText');
+  if(abcGuide)abcGuide.classList.toggle('on',type==='abc');
+  if(abcFields)abcFields.style.display=type==='abc'?'flex':'none';
   if(ta){
+    ta.style.display=type==='abc'?'none':'block';
     if(type==='focus')ta.placeholder='Что выбрал для себя сегодня? Как себя чувствовал пока делал это?';
     else if(type==='morning')ta.placeholder='Как начинается день?';
     else if(type==='evening')ta.placeholder='Как прошёл день?';
-    else ta.placeholder='Что сейчас?';
+    else if(type==='note')ta.placeholder='Что сейчас?';
   }
 }
 function selMood(el,v){
@@ -762,10 +876,18 @@ function selMood(el,v){
   el.classList.add('sel');
 }
 function saveEntry(){
-  const txt=$('addText').value.trim();
-  if(!txt){toast('Напиши что-нибудь');return;}
   if(!appData.entries)appData.entries=[];
-  appData.entries.push({id:uid(),date:todayISO(),type:addType,mood:selMoodVal,text:txt,response:null,morResp:null,role:null,createdAt:Date.now()});
+  if(addType==='abc'){
+    const a=$('abcA').value.trim(),c=$('abcC').value.trim();
+    if(!a){toast('Опиши ситуацию (А)');return;}
+    const b=$('abcB').value.trim(),c1=$('abcC1').value.trim(),b1=$('abcB1').value.trim();
+    const text=`А: ${a}\nС: ${c}\nВ: ${b}\nС1: ${c1}\nВ1: ${b1}`;
+    appData.entries.push({id:uid(),date:todayISO(),type:'abc',mood:selMoodVal,text:text,abc:{a,b,c,c1,b1},response:null,morResp:null,role:null,createdAt:Date.now()});
+  }else{
+    const txt=$('addText').value.trim();
+    if(!txt){toast('Напиши что-нибудь');return;}
+    appData.entries.push({id:uid(),date:todayISO(),type:addType,mood:selMoodVal,text:txt,response:null,morResp:null,role:null,createdAt:Date.now()});
+  }
   deckIdx=0;sync();closeSheet();render();toast('Сохранено ✓');
 }
 
@@ -814,8 +936,12 @@ async function askClaude(id,btn){
   const role=getActiveRole();
   const ctx=appData.settings?.baseContext||'';
   const isFocus=e.type==='focus';
+  const isAbc=e.type==='abc';
   let sys;
-  if(isFocus){
+  if(isAbc){
+    const abcPrompt=appData.settings?.abcPrompt||DEFAULT_ABC_PROMPT;
+    sys=[ctx,abcPrompt].filter(Boolean).join('\n\n');
+  }else if(isFocus){
     const focPrompt=appData.settings?.focPrompt||DEFAULT_FOCUS_PROMPT;
     sys=[ctx,focPrompt].filter(Boolean).join('\n\n');
   }else{
@@ -826,9 +952,11 @@ async function askClaude(id,btn){
   try{
     const r=await callClaudeSystem(sys,userMsg,350);
     e.response=r.trim();
-    e.role=isFocus?'focus':role.id;
+    e.role=isAbc?'abc':isFocus?'focus':role.id;
     sync();closeSheet();
-    if(isFocus){
+    if(isAbc){
+      showReveal(e,{name:'АВС',color:'#C75D8A'});
+    }else if(isFocus){
       showReveal(e,{name:'фокус',color:'#2A9D8F'});
     }else{
       showReveal(e,role);
@@ -927,6 +1055,7 @@ function openSettings(){
   $('sEve').value=appData.settings?.evePrompt||'';
   $('sMor').value=appData.settings?.morPrompt||'';
   $('sFoc').value=appData.settings?.focPrompt||DEFAULT_FOCUS_PROMPT;
+  $('sAbc').value=appData.settings?.abcPrompt||DEFAULT_ABC_PROMPT;
   renderRolesList();
   openSheet('shSettings');
 }
@@ -946,6 +1075,7 @@ function saveSettings(){
   appData.settings.evePrompt=$('sEve').value.trim();
   appData.settings.morPrompt=$('sMor').value.trim();
   appData.settings.focPrompt=$('sFoc').value.trim();
+  appData.settings.abcPrompt=$('sAbc').value.trim();
   sync();closeSheet();toast('Настройки сохранены');
 }
 
@@ -1010,6 +1140,37 @@ function deleteRole(id){
   appData.settings.roles=(appData.settings.roles||[]).filter(r=>r.id!==id);
   if(appData.settings.activeRole===id)appData.settings.activeRole=appData.settings.roles[0]?.id||'kat';
   sync();openSettings();toast('Удалено');
+}
+
+// ═══ SUPPORT PHRASES ═══
+function openSupport(){
+  renderSupportLists();
+  openSheet('shSupport');
+}
+function renderSupportLists(){
+  if(!appData.support)appData.support={oda:[],perm:[]};
+  const renderList=(arr,type,el)=>{
+    el.innerHTML=arr.map((t,i)=>`<div class="phrase-item">
+      <div class="phrase-item-text">${esc(t)}</div>
+      <button class="phrase-item-del" onclick="removePhrase('${type}',${i})"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>`).join('')||'<div style="font-size:12px;color:var(--t3);padding:8px 0;font-style:italic">Пока пусто</div>';
+  };
+  renderList(appData.support.oda,'oda',$('odaList'));
+  renderList(appData.support.perm,'perm',$('permList'));
+}
+function addPhrase(type){
+  if(!appData.support)appData.support={oda:[],perm:[]};
+  const inp=$(type+'Inp');
+  const txt=inp.value.trim();
+  if(!txt){toast('Напиши фразу');return;}
+  appData.support[type].push(txt);
+  inp.value='';
+  sync();renderSupportLists();render();
+}
+function removePhrase(type,idx){
+  if(!appData.support)return;
+  appData.support[type].splice(idx,1);
+  sync();renderSupportLists();render();
 }
 
 // ═══ CLAUDE API ═══
